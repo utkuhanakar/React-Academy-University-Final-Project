@@ -158,10 +158,10 @@ export default function Header({
                     onClick={onOpenCategories}
                     aria-pressed={categoriesActive}
                     className={[
-                      'rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide transition sm:text-xs',
+                      'rounded-lg border px-3 py-1.5 text-xs font-medium transition sm:text-sm',
                       categoriesActive
-                        ? 'border-violet-500 bg-violet-500/15 text-violet-950 shadow-inner dark:border-violet-400 dark:bg-violet-950/40 dark:text-violet-100'
-                        : 'border-neutral-300 bg-white text-neutral-700 hover:border-violet-500/70 hover:bg-violet-50/60 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#d4d4d4]',
+                        ? 'border-neutral-800 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
+                        : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:bg-zinc-800 dark:text-neutral-200 dark:hover:bg-zinc-700',
                     ].join(' ')}
                   >
                     Modüller
@@ -173,10 +173,10 @@ export default function Header({
                     onClick={onOpenLearningGuide}
                     aria-pressed={guideActive}
                     className={[
-                      'rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide transition sm:text-xs',
+                      'rounded-lg border px-3 py-1.5 text-xs font-medium transition sm:text-sm',
                       guideActive
-                        ? 'border-sky-600 bg-sky-500/15 text-sky-950 shadow-inner dark:border-sky-400 dark:bg-sky-950/40 dark:text-sky-100'
-                        : 'border-neutral-300 bg-white text-neutral-700 hover:border-sky-500/70 hover:bg-sky-50/60 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#d4d4d4]',
+                        ? 'border-neutral-800 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
+                        : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:bg-zinc-800 dark:text-neutral-200 dark:hover:bg-zinc-700',
                     ].join(' ')}
                   >
                     Rehber
@@ -188,10 +188,10 @@ export default function Header({
                     onClick={onOpenSkillsStudio}
                     aria-pressed={skillsStudioActive}
                     className={[
-                      'rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide transition sm:text-xs',
+                      'rounded-lg border px-3 py-1.5 text-xs font-medium transition sm:text-sm',
                       skillsStudioActive
-                        ? 'border-emerald-500 bg-emerald-500/15 text-emerald-200 shadow-inner dark:border-[#04aa6d] dark:bg-[#1e3d2f] dark:text-[#b6f0d1]'
-                        : 'border-neutral-300 bg-white text-neutral-700 hover:border-emerald-500 hover:bg-emerald-50/50 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#d4d4d4]',
+                        ? 'border-neutral-800 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
+                        : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:bg-zinc-800 dark:text-neutral-200 dark:hover:bg-zinc-700',
                     ].join(' ')}
                   >
                     Stüdyo
@@ -238,7 +238,7 @@ export default function Header({
               aria-label={`${progressDescription}: yüzde ${percent}`}
             >
               <div
-                className="h-full rounded-full bg-green-600 dark:bg-[#89d185]"
+                className="h-full rounded-full bg-teal-600 dark:bg-teal-500/90"
                 style={{ width: `${percent}%` }}
               />
             </div>
@@ -276,7 +276,7 @@ export default function Header({
                 onChange={(e) => onSearchQueryChange?.(e.target.value)}
                 placeholder="Ders ara…"
                 autoComplete="off"
-                className="w-full rounded-xl border border-neutral-300 bg-neutral-50 py-2.5 pl-10 pr-4 text-[16px] text-neutral-900 shadow-sm outline-none transition placeholder:text-neutral-400 focus:border-green-600 focus:bg-white focus:ring-2 focus:ring-green-600/20 sm:text-sm dark:border-[#474747] dark:bg-[#1e1e1e] dark:text-[#ececec]"
+                className="w-full rounded-lg border border-neutral-300 bg-neutral-50 py-2.5 pl-10 pr-4 text-[16px] text-neutral-900 shadow-sm outline-none transition placeholder:text-neutral-400 focus:border-neutral-500 focus:bg-white focus:ring-2 focus:ring-neutral-400/25 sm:text-sm dark:border-neutral-600 dark:bg-zinc-900 dark:text-neutral-100"
               />
             </div>
           </div>

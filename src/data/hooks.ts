@@ -20,9 +20,9 @@ Hooks, yan etkileri \`useEffect\` ile “bileşenin bu kısmı şunu yapıyor”
 
 \`useAuth\`, \`useWindowSize\` gibi \`use\` ile başlayan fonksiyonlar mantığı paylaşır; state’i paylaşmazlar — her çağrı kendi kapalı state’ini kurar.
 
-> **Pratik not:** “Hook kuralları ihlal edilirse ne olur?” — Çağrı sırası kayar; React iç state ile eşleşme bozulur (hata ve garip bug’lar).
+> **İpucu:** “Hook kuralları ihlal edilirse ne olur?” — Çağrı sırası kayar; React iç state ile eşleşme bozulur (hata ve garip bug’lar).
 
-> **Sık sorulan:** “Custom hook’a prop geçilir mi?” — Evet, argüman olarak; ama hook içinde aynı sırada hook çağrısı korunmalı.
+> **Sıkça sorulan:** “Custom hook’a prop geçilir mi?” — Evet, argüman olarak; ama hook içinde aynı sırada hook çağrısı korunmalı.
 `.trim(),
     codeExamples: [
       {
@@ -47,6 +47,32 @@ export default function Sayaç() {
       correctAnswer:
         "Hook'lar yalnızca fonksiyon bileşenlerinin veya özel hook'ların en üst düzeyinde çağrılmalıdır",
     },
+    extraQuizChecks: [
+      {
+        question:
+          'Özel bir hook örneği `useSepet()` her bileşenden çağrıldığında state için ne yapar?',
+        choices: [
+          'Çağıran bileşene özel saklama oluşturur; global tek state zorunlu değildir',
+          'Tüm bileşenler aynı sepet nesnesini zorla paylaşmak zorundadır',
+          'Yalnızca class bileşenlerinde kullanılabilir',
+          '`useMemo` ile aynı davranışı verir',
+        ],
+        correctAnswer:
+          'Çağıran bileşene özel saklama oluşturur; global tek state zorunlu değildir',
+      },
+      {
+        question:
+          'Üç hook çağrısı üst düzeyde sırayla yazılmışken koşulla dördüncü bir hook çalıştırmaya çalışırsanız tipik olarak ne beklenir?',
+        choices: [
+          'Çağrı sırası render’lar arasında kayabilir — React uyarısı / kural ihlali',
+          'Üretimde React sessizce yok sayar',
+          'Bu yaklaşım resmi olarak önerilen optimizasyon kuralıdır',
+          'Yalnızca TypeScript hata verir; çalışma zamanı sorun çıkarmaz',
+        ],
+        correctAnswer:
+          'Çağrı sırası render’lar arasında kayabilir — React uyarısı / kural ihlali',
+      },
+    ],
     dragOrderActivity: {
       title: 'Tek render turunda sıra',
       description: 'Tek bir bileşende tipik oluşum düzenini sıraya koyun.',
@@ -95,9 +121,9 @@ export default function App() {
 
 State’i **doğrudan mutasyonla** değiştirmeyin (\`state.push(...)\` ile aynı dizi referansı). Bunun yerine **yeni referans** üretin (\`setDeger([...state, x])\`, nesnede spread). React, referans değişimine göre “fark var mı?” diye karşılaştırabilir; mutasyon referansı sakladığı sürece yeniden render veya zincir reaksiyonu beklediğiniz gibi gitmeyebilir.
 
-> **Sık sorulan:** “State doğrudan neden değiştirilmez?” — React, önceki ve sonraki state snapshot’larını öngörülebilir şekilde kıyaslar; mutasyon geçmişi gizler, zaman içi güncellemeleri ve bail-out mantığını bozar; ekip içi yordam tutarlılığı ve hata ayıklama zorlaşır.
+> **Sıkça sorulan:** “State doğrudan neden değiştirilmez?” — React, önceki ve sonraki state snapshot’larını öngörülebilir şekilde kıyaslar; mutasyon geçmişi gizler, zaman içi güncellemeleri ve bail-out mantığını bozar; ekip içi yordam tutarlılığı ve hata ayıklama zorlaşır.
 
-> **Pratik not:** \`setSayac(sayac + 1)\` ile \`setSayac((s) => s + 1)\` — ardışık güncellemelerde ikinci biçim güvenilir.
+> **İpucu:** \`setSayac(sayac + 1)\` ile \`setSayac((s) => s + 1)\` — ardışık güncellemelerde ikinci biçim güvenilir.
 `.trim(),
     codeExamples: [
       {
@@ -173,37 +199,7 @@ export default function App() {
     moduleId: 'hooks',
     title: 'useEffect',
     difficulty: 'orta',
-    content: `
-## Ne işe yarar?
-
-\`useEffect\`, **render sonrası** çalışan yan etkileri (ağ isteği, abonelik, DOM ölçümü, log) ifade eder.
-
-## Bağımlılık dizisi (dependency array)
-
-1. **Dizisiz** \`useEffect(fn)\` — Her render’dan sonra \`fn\` tekrar çalışır. Dikkat: sınırsız döngü riski (içeride state setlerseniz).
-
-2. **Boş dizi** \`useEffect(fn, [])\` — Yalnızca **mount** ve genelde unmount’ta (cleanup ile) ilgilenir: “bir kez kur” senaryosu.
-
-3. **Dolu dizi** \`useEffect(fn, [a, b])\` — \`a\` veya \`b\` önceki render’a göre değiştiyse efekt yeniden çalışır. Obje/dizi bağımlılığında **referans** eşitliği önemli; literal objeyi her render’da üretmek efekti her seferinde tetikler.
-
-## Cleanup (temizleme) fonksiyonu
-
-\`useEffect(() => { ... return () => { temizle } }, ...)\` — Önceki efekt yeniden çalışmadan veya bileşen unmount olmadan önce cleanup çağrılır. Zamanlayıcı, WebSocket, \`addEventListener\` gibi kaynakları **sökün**; hafıza sızıntısı ve çift abonelik engellenir.
-
-### Örnek akış (dolu dizi)
-
-- \`id\` değişti: önceki \`id\` için cleanup → yeni \`id\` için kurulum.
-- Unmount: son cleanup.
-
-### Örnek akış (boş dizi)
-
-- Mount: kurulum bir kez.
-- Unmount: cleanup bir kez.
-
-> **Pratik not:** \`useEffect\` içinde doğrudan state setter kullanırken bağımlılık listesini eksik bırakmak **stale closure** üretebilir — eslint \`react-hooks/exhaustive-deps\` uyarısının nedeni.
-
-> **Pratik not:** “\`useLayoutEffect\` nedir?” — Senkron, DOM mutasyonundan önce; ölçüm ve flash önleme.
-`.trim(),
+    content: "## Ne iş yapar?\n\n`useEffect`, bileşeni çizdikten sonra yan etkiyi sırayla çalıştırır: veri çekmek veya iptal etmek, abonelik açmak, zamanlayıcı kurmak, pencere `resize` olayına kaydolmak veya DOM’a dokunmak gibi işler için kullanırsınız. Bunları doğrudan render gövdesine gömmek okumayı zorlaştırır ve sıra beklentinizi daha çabuk bozacak dallanmalara götürür.\n\n## Üç bağlılık listesi yazım şekli\n\n**1 — Parametresiz** (`useEffect(fn)`): Her görünüşte çalışabilir — içerde koşulsuz `setState` varsa sonsuz sıçrama riski çıkar ve üretimde çoğu kez gereksiz gürültü üretir.\n\n**2 — Boş liste** (`useEffect(fn, [])`): “Yaşama bir kez kur; gerekiyorsa unmount’ta sök” modeli. Geliştirme sırasında Strict Mode, kur–sök sırasını bilinçle ekstra deneyebilir; bu üretim davranışını kopyalamaz.\n\n**3 — Dolu liste** (`useEffect(fn, [a, b])`): `Object.is` benzeri kıyasla izlenir — obje veya dizi her render’da yeni referansla üretiliyorsa efekt sık sık yeniden tetiklenir.\n\n## Referans tuzakları\n\n`useEffect(() => {...}, [{ x: 1 }])` gibi bağımlılıkta doğrudan yeni nesne yazmak, her görünüşte “yeni referans” üretildiği için efektleri istemeden tekrarlatabilir. Gerekirse üstten stabil referans verin veya `useMemo` ile sınırlandırın.\n\n## Cleanup (geri dönüş)\n\n`return () => { ... }` ile önceki kurulumu sökün: zamanlayıcıyı iptal edin, `AbortController` ile isteği kesin, `removeEventListener` çağırın. Böylece çift abonelik ve bellek taşması riskini azaltırsınız.\n\n### Dolu liste akışı\n\n- Bir kimlik değişti: önce eski kimlik için cleanup, sonra yeni kimlik için kurulum.\n- Bileşen kapandı: son cleanup sırayla çalışır.\n\n### Boş liste akışı\n\n- İlk oluş kurulumunu ve çıkış temizliğini görürsünüz. Geliştirme sırasında Strict Mode’un bu sırayı gereğinden ek denemesi normal bir uyarıcıdır — üretimi bozmaz.\n\n> **İpucu:** `react-hooks/exhaustive-deps` uyarısı çoğu zaman efektin bir önceki render’dan eski bağlamla yakalanması (**stale closure**) riskine işaret eder — gereksiz yere liste genişletmeyin ama gerçekten kullandığınız değerleri yazmaktan da kaçınmayın.\n\n> **İpucu:** `useLayoutEffect`, çizimden hemen önce senkron çalışır; titreşimi veya kaymayı düzeltme gibi nadir işler için uygundur — uzun süren ağ işlerini buraya taşımayın.",
     codeExamples: [
       {
         title: 'Mount + cleanup (interval)',
@@ -236,6 +232,26 @@ export default function Dinleyici({ kullaniciId }: { kullaniciId: string }) {
   return <p>{mesaj}</p>
 }`,
       },
+      {
+        title: 'Sekme başlığı için kur + cleanup — bağımlılıkta geri yükleme',
+        code: `import { useEffect } from 'react'
+
+export default function BaslikSenk({ baslik }: { baslik: string }) {
+  useEffect(() => {
+    const onceki = document.title
+    document.title = baslik
+    return () => {
+      document.title = onceki
+    }
+  }, [baslik])
+
+  return (
+    <p style={{ margin: 0 }}>
+      Aktif başlık: {baslik}. Cleanup ile önceki \`document.title\` sırayla geri yüklenir.
+    </p>
+  )
+}`,
+      },
     ],
     quiz: {
       question:
@@ -249,6 +265,44 @@ export default function Dinleyici({ kullaniciId }: { kullaniciId: string }) {
       correctAnswer:
         'Bu efekt genellikle yalnızca mount’ta kurulur; cleanup varsa unmount’ta (ve strict mode geliştirmede ek davranışlar) çalışır',
     },
+    extraQuizChecks: [
+      {
+        question:
+          'Parametresiz `useEffect(fn)` ve gövdesinde koşulsuz `setSayac((s) => s + 1)` varsa ne beklemek daha mantıklıdır?',
+        choices: [
+          'Sonsuz veya gereğinden sık render riski yükselir (çökme veya takılma ihtimali artar)',
+          '`useEffect` yalnızca unmount sırasında bir kez tetiklenir',
+          'Tarayıcı bu kalıp yüzünden derlemeyi durdurur',
+          'Üretimde bu kalıp kullanıcıdan özel izin gerektirir',
+        ],
+        correctAnswer:
+          'Sonsuz veya gereğinden sık render riski yükselir (çökme veya takılma ihtimali artar)',
+      },
+      {
+        question:
+          '`useEffect` içinde döndürdüğünüz cleanup işlevi ne zaman çalışır?',
+        choices: [
+          'Aynı efekt yeniden çalışmadan önce önceki kurulumu iptal etmek için ve bileşenden çıktığınızda',
+          'Her render sırasında, JSX ile aynı anda',
+          '`useMemo` yeniden sıra aldığında',
+          'Yalnızca sunucu tarafında (SSR) anlamlıdır',
+        ],
+        correctAnswer:
+          'Aynı efekt yeniden çalışmadan önce önceki kurulumu iptal etmek için ve bileşenden çıktığınızda',
+      },
+      {
+        question:
+          '`useLayoutEffect` için hangi ifade genelde daha doğrudur?',
+        choices: [
+          'Tarayıcı çizimi öncesinde DOM üzerinde senkron çalışır; kayma/titreşim düzeltmeleri veya doğrudan ölçüm için genelde bunu seçersiniz',
+          'Uzun süren istekleri `useEffect` yerine burada sürdürmek önerilir',
+          'Bu hook’un bağımlılık dizisi yazılmazsa derleme sırasında yasaklanır',
+          'Üretimde Strict Mode bu hook’un tamamını sıfırlar ve atlar',
+        ],
+        correctAnswer:
+          'Tarayıcı çizimi öncesinde DOM üzerinde senkron çalışır; kayma/titreşim düzeltmeleri veya doğrudan ölçüm için genelde bunu seçersiniz',
+      },
+    ],
     clozeActivity: {
       title: 'useEffect özeti — boşluklar',
       description: 'Kelime havuzundan seçerek `___` yerlerini doldurun.',
@@ -285,23 +339,25 @@ export default function App() {
     title: 'useRef',
     difficulty: 'orta',
     content: `
-## Ne tutar?
+## Ref ne işe yarar?
 
-\`const r = useRef<T>(baslangic)\` — \`r.current\` üzerinde **mutasyon kalıcı**dır; **ref değişimi yeniden render tetiklemez**. DOM düğümü için \`ref={r}\` atanır.
+\`useRef\`, bileşen her render olduğunda **aynı nesneyi** döndürür; asıl iş yaptığımız yer \`.current\` alanıdır. Burayı güncellersiniz ama tarayıcı yeniden çizimi **state setter** gibi otomatik tetiklemez. Bu yüzden ref’i genelde iki iş için kullanıyoruz: DOM öğesi tutmak (\`ref={r}\`) ve render dışında sayacı / zamanlayıcı kimliğini / önceki değeri saklamak.
 
-## State’ten fark
+\`const r = useRef<T>(baslangic)\` yazdığınızda \`r.current\`’in ilk değeri \`baslangic\`; sonra istediğiniz zaman \`r.current = ...\` diyebilirsiniz.
 
-- **State:** güncelleme → render.
-- **Ref:** \`.current\` atama → render yok (genelde).
+## State’ten ne farkı var?
 
-## Kullanım örnekleri
+- **State:** Setter ile güncelleme yaparsınız → React bileşeni yeniden render edebilir.
+- **Ref:** Yalnızca \`.current\`’i değiştirdiğinizde → çoğu senaryoda ekranda bir şey olmaz; veri bileşende durur ama “görsel güncelleme” için çoğu zaman ekstra state veya başka tetik gerekebilir.
 
-- Input’a odaklanmak, ölçüm almak.
-- Zamanlayıcı / önceki değer tutmak (render dışı).
+## Ne zaman işinize yarar?
 
-> **Pratik not:** Ref ile tuttuğunuz değeri render’da göstermek istiyorsanız, ref değiştikçe **ayrıca state** kaldırmak gerekebilir — aksi halde ekran güncellenmez.
+- Input’a odak vermek, ölçü almak.
+- Interval / timeout kimliği; bir önceki props veya state değerini tutmak.
 
-> **Sık sorulan:** “\`useRef(null)\` ile DOM?” — \`useEffect\` içinde \`ref.current\` okuyun; ilk render’da null olabilir.
+> **İpucu:** Ref’te sakladığınız bir bilgiyi kullanıcıya göstermek istiyorsanız, ref değişince arayüzün de yenilenmesi gerekir. Ref bunu tek başına yapmaz; çoğu kez yan yana küçük bir **state** veya tetikleyici bir mekanizma gerekir.
+
+> **Sıkça sorulan:** \`useRef(null)\` ile DOM’a bağladığınızda ilk render’da \`current\` çoğu zaman henüz \`null\` olabilir. DOM’a güvenilir şekilde erişmek için genelde bu okumayı bir \`useEffect\` içine koymak mantıklıdır.
 `.trim(),
     codeExamples: [
       {
@@ -368,9 +424,9 @@ Props zinciri çok uzadığında **Provider** ile ağaçta değer sunar, alt bil
 
 En yakın Provider’ın \`value\`’sünü döner; bileşen Provider değiştikçe **yeniden render** olur.
 
-> **Pratik not:** “Context vs Redux/Zustand?” — Küçük–orta global ihtiyaç için context; daha büyük ve raporlamalı için store araçları; kısa tanım için trade-off yeterli.
+> **İpucu:** “Context vs Redux/Zustand?” — Küçük–orta global ihtiyaç için context; daha büyük ve raporlamalı için store araçları; kısa tanım için trade-off yeterli.
 
-> **Sık sorulan:** “\`value=\` prop’unda her render’da yeni obje?” — Alt ağaç gereksiz render; \`useMemo\` ile değer sabitleme veya parçalama stratejisi.
+> **Sıkça sorulan:** “\`value=\` prop’unda her render’da yeni obje?” — Alt ağaç gereksiz render; \`useMemo\` ile değer sabitleme veya parçalama stratejisi.
 `.trim(),
     codeExamples: [
       {

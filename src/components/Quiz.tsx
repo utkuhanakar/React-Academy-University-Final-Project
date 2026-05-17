@@ -173,7 +173,7 @@ export default function Quiz({
 
       <div
         className={[
-          'rounded-2xl border bg-white p-1 shadow-sm',
+          'rounded-lg border bg-white p-1 shadow-sm',
           strictPracticeCallbacks
             ? [
                 pathWrongPulse ? 'animate-quiz-path-wrong-flash' : '',
@@ -234,18 +234,18 @@ export default function Quiz({
                 if (!isSubmitted) setSelectedOption(optionIndex)
               }}
               className={[
-                'rounded-xl border-2 px-5 py-4 text-left text-base font-semibold leading-snug shadow-sm transition-colors',
+                'rounded-lg border px-4 py-3.5 text-left text-base font-medium leading-snug shadow-sm transition-colors',
                 !isSubmitted
-                  ? 'hover:-translate-y-0.5 hover:border-green-500 hover:bg-green-50/70 hover:shadow-md dark:hover:border-[#89d185] dark:hover:bg-[#1e2d24]'
+                  ? 'hover:border-neutral-400 hover:bg-neutral-50 dark:hover:border-neutral-500 dark:hover:bg-zinc-800/70'
                   : '',
                 !isSubmitted &&
                   isSelected &&
-                  'translate-y-0 border-green-600 bg-green-100 ring-2 ring-green-500/30 dark:border-[#89d185] dark:bg-[#253329] dark:text-[#e8f8ef] dark:ring-[#89d185]/35',
+                  'border-teal-600 bg-teal-50 ring-1 ring-teal-500/25 dark:border-teal-500 dark:bg-teal-950/40 dark:text-teal-50 dark:ring-teal-500/20',
                 !isSubmitted &&
                   !isSelected &&
                   'border-neutral-200 bg-white text-neutral-800 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#d4d4d4]',
                 showCorrectStyle &&
-                  'border-green-600 bg-green-500 text-white ring-0 !shadow-lg hover:!border-green-600 hover:!bg-green-500 dark:border-[#6a9955] dark:bg-[#538d4a]',
+                  'border-teal-700 bg-teal-700 text-white ring-0 shadow-md hover:!border-teal-700 hover:!bg-teal-700 dark:border-teal-500 dark:bg-teal-700',
                 showWrongStyle &&
                   [
                     strictPracticeCallbacks
@@ -253,7 +253,7 @@ export default function Quiz({
                       : 'border-red-500 bg-red-50 text-red-950 hover:!border-red-500 hover:!bg-red-50 dark:border-red-400 dark:bg-red-950/35 dark:text-red-100',
                   ].join(' '),
                 showRevealCorrect &&
-                  'border-green-600 bg-green-100 text-green-950 ring-1 ring-green-500/40 dark:border-[#89d185] dark:bg-[#1e2d24] dark:text-[#cce8d4] dark:ring-[#89d185]/35',
+                  'border-teal-600 bg-teal-50 text-teal-950 ring-1 ring-teal-500/25 dark:border-teal-500 dark:bg-teal-950/35 dark:text-teal-50',
                 isSubmitted &&
                   !isSelected &&
                   !isCorrectOption &&
@@ -262,7 +262,7 @@ export default function Quiz({
                 .filter(Boolean)
                 .join(' ')}
             >
-              <span className="mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-current text-sm opacity-90">
+              <span className="mr-3 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-current text-xs font-semibold opacity-90">
                 {String.fromCharCode(65 + optionIndex)}
               </span>
               {optionLabel}
@@ -277,7 +277,7 @@ export default function Quiz({
             type="button"
             onClick={handleSubmitAnswer}
             disabled={selectedOption === null}
-            className="rounded-xl bg-[#58cc02] px-8 py-3 text-base font-bold uppercase tracking-wide text-white shadow-[0_4px_0_#46a302] transition-transform hover:translate-y-px hover:shadow-[0_3px_0_#46a302] active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:shadow-none dark:shadow-[0_4px_0_#356e2a] dark:hover:shadow-[0_3px_0_#356e2a] dark:disabled:bg-[#474747]"
+            className="rounded-lg bg-neutral-900 px-7 py-2.5 text-base font-semibold text-white shadow-sm transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white dark:disabled:bg-neutral-700 dark:disabled:text-neutral-400"
           >
             Cevabı gönder
           </button>
@@ -288,7 +288,7 @@ export default function Quiz({
             onClick={handleTryAgain}
             className={
               strictPracticeCallbacks
-                ? 'rounded-xl border-[3px] border-red-600 bg-white px-6 py-3 text-base font-black uppercase tracking-wide text-red-700 shadow-md ring-2 ring-red-400/60 hover:bg-red-50 dark:border-red-400 dark:bg-red-950/40 dark:text-red-100 dark:hover:bg-red-950/70'
+                ? 'rounded-lg border border-red-600 bg-white px-5 py-2.5 text-sm font-semibold text-red-700 shadow-sm hover:bg-red-50 dark:border-red-400 dark:bg-red-950/40 dark:text-red-100 dark:hover:bg-red-950/70'
                 : 'rounded-xl border-2 border-neutral-300 bg-white px-5 py-2.5 text-sm font-bold text-neutral-800 shadow-sm hover:bg-neutral-50 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#ececec] dark:hover:bg-[#383838]'
             }
           >
@@ -299,14 +299,14 @@ export default function Quiz({
 
       {isChoiceCorrect ? (
         <div
-          className="mx-3 mb-3 rounded-xl border-2 border-green-500 bg-gradient-to-b from-green-50 to-green-100/90 px-4 py-4 text-green-950 shadow-md dark:border-[#538d4a] dark:from-green-950/55 dark:to-green-950/25 dark:text-green-50"
+          className="mx-3 mb-3 rounded-lg border border-teal-200 bg-teal-50/95 px-4 py-4 text-teal-950 shadow-sm dark:border-teal-800 dark:bg-teal-950/30 dark:text-teal-50"
           role="status"
         >
-          <p className="text-lg font-extrabold tracking-tight text-green-800 dark:text-[#cce8d4]">
+          <p className="text-lg font-semibold tracking-tight text-teal-900 dark:text-teal-100">
             {strictPracticeCallbacks ? 'Doğru — bir adım ileri.' : 'Harika! Doğru cevap.'}
           </p>
           {strictPracticeCallbacks ? null : (
-            <p className="mt-2 text-sm font-medium leading-relaxed text-green-900 dark:text-green-100/90">
+            <p className="mt-2 text-sm font-normal leading-relaxed text-teal-900 dark:text-teal-100/90">
               Şimdi canlı kod görevini doğrula; her iki adım tamamsa “Dersi bitir” ile
               ilerlemeni kaydedebilirsin.
             </p>
@@ -317,7 +317,7 @@ export default function Quiz({
       {isChoiceWrong ? (
         <div
           className={[
-            'mx-3 mb-3 rounded-xl border-2 px-4 py-4 shadow-inner',
+            'mx-3 mb-3 rounded-lg border px-4 py-4 shadow-inner',
             strictPracticeCallbacks
               ? 'border-red-600 bg-gradient-to-br from-red-100 to-red-200 text-red-950 dark:from-red-950/70 dark:to-red-900/55 dark:border-red-400 dark:text-red-50'
               : 'border-red-300 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-950/40 dark:text-red-100',
@@ -326,17 +326,17 @@ export default function Quiz({
         >
           {strictPracticeCallbacks ? (
             <div className="space-y-2">
-              <p className="text-xs font-black uppercase tracking-[0.25em] text-red-700 dark:text-red-200">
+              <p className="text-xs font-semibold text-red-800 dark:text-red-200">
                 Yanlış cevap
               </p>
-              <p className="text-base font-black leading-snug md:text-lg">
+              <p className="text-base font-semibold leading-snug md:text-lg">
                 Bu turda ilerleme durdu; baştan devam etmek için aşağıdaki düğmeyi kullan.
               </p>
               <div className="rounded-lg border border-red-600/55 bg-white/95 px-3 py-3 text-red-950 shadow-inner dark:border-red-500/55 dark:bg-red-950/40 dark:text-red-50">
-                <p className="text-[11px] font-black uppercase tracking-wide text-red-800 dark:text-red-200">
+                <p className="text-xs font-medium text-red-800 dark:text-red-200">
                   Doğru cevap metni (şık olarak)
                 </p>
-                <p className="mt-2 text-base font-bold leading-snug">
+                <p className="mt-2 text-base font-semibold leading-snug">
                   {options[correctAnswerIndex]}
                 </p>
               </div>

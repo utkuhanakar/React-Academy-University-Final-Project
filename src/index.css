@@ -85,6 +85,44 @@ body {
   color-scheme: dark;
 }
 
+/*
+  @tailwindcss/typography: satır içi koda eklerken sanal `` tırnakları ve mor zemin sık sık kullanıcıyı yanlıştırır.
+  Dilimli bloklar (syntax highlighter'da language-* ile gelen kod) için bırakılmaz — yalnızca satır içi \` Markdown kodu sıkılır.
+*/
+.lesson-md.prose code[class*='language-']::before,
+.lesson-md.prose code[class*='language-']::after {
+  content: none !important;
+}
+
+.lesson-md.prose code:not([class*='language-'])::before,
+.lesson-md.prose code:not([class*='language-'])::after {
+  content: none !important;
+}
+
+.lesson-md.prose code:not([class*='language-']) {
+  border-radius: 2px !important;
+  padding: 0.07rem 0.32rem !important;
+  border-color: rgb(212 212 212) !important;
+  background-color: rgb(245 245 245) !important;
+  color: rgb(23 23 23) !important;
+  box-decoration-break: clone;
+}
+
+.dark .lesson-md.prose code:not([class*='language-']) {
+  border-color: rgb(82 82 91) !important;
+  background-color: rgb(39 39 42 / 0.92) !important;
+  color: rgb(244 244 245) !important;
+}
+
+.lesson-md.prose blockquote {
+  font-style: normal;
+}
+
+.lesson-md.prose blockquote p {
+  font-style: normal;
+  font-weight: 400;
+}
+
 /* Yazdırmada (özellikle karanlık tema) toner dostu nötr çıktı */
 @media print {
   html,

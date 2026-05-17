@@ -77,16 +77,16 @@ export default function Sidebar({
     <aside
       id="sidebar-ders-cekmecesi"
       className={[
-        'w-full shrink-0 border-[#d9eee1] bg-[#f1f8f4] print:hidden dark:border-[#333] dark:bg-[#1a2120]',
+        'w-full shrink-0 border-neutral-200 bg-neutral-50 print:hidden dark:border-neutral-700 dark:bg-zinc-950/85',
         narrowScreenDrawer
           ? [
-              'fixed inset-y-0 left-0 z-50 flex max-h-none w-[min(100%,21rem)] max-w-[100vw] flex-col overflow-hidden border-y-0 border-l-0 border-r border-[#d9eee1] shadow-2xl transition-transform duration-200 ease-out lg:static lg:inset-auto lg:z-auto lg:max-h-none lg:max-w-none lg:w-72 lg:translate-x-0 lg:shadow-none',
+              'fixed inset-y-0 left-0 z-50 flex max-h-none w-[min(100%,21rem)] max-w-[100vw] flex-col overflow-hidden border-y-0 border-l-0 border-r border-neutral-200 shadow-xl transition-transform duration-200 ease-out dark:border-neutral-700 lg:static lg:inset-auto lg:z-auto lg:max-h-none lg:max-w-none lg:w-72 lg:translate-x-0 lg:shadow-none',
               narrowDrawerOpen
                 ? 'translate-x-0'
                 : '-translate-x-full lg:translate-x-0',
             ].join(' ')
           : [
-              'shrink-0 border-b lg:w-72 lg:border-b-0 lg:border-r lg:border-[#d9eee1] lg:dark:border-[#333]',
+              'shrink-0 border-b lg:w-72 lg:border-b-0 lg:border-r lg:border-neutral-200 lg:dark:border-neutral-700',
             ].join(' '),
       ].join(' ')}
     >
@@ -96,7 +96,7 @@ export default function Sidebar({
               <button
                 type="button"
                 onClick={() => onNarrowDrawerClose?.()}
-                className="rounded-lg border border-[#cdebd8] px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[#282c35] hover:bg-white dark:border-[#3c4944] dark:text-[#e8e8e8] dark:hover:bg-[#222b28]"
+                className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-800 hover:bg-white dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-zinc-800"
               >
                 Kapat
               </button>
@@ -111,27 +111,27 @@ export default function Sidebar({
               }}
               aria-pressed={skillsStudioActive}
               className={[
-                'mb-4 flex w-full items-center justify-between gap-2 rounded-lg border-2 px-3 py-3 text-left text-sm font-bold transition',
+                'mb-4 flex w-full items-center justify-between gap-2 rounded-lg border px-3 py-3 text-left text-sm font-semibold transition',
                 skillsStudioActive
-                  ? 'border-[#04aa6d] bg-[#d9eee1] text-[#1a1e2e] shadow-sm dark:border-[#89d185] dark:bg-[#253329] dark:text-[#cce8d4] dark:shadow-inner'
-                  : 'border-[#cdebd8] bg-white text-[#282c35] hover:border-[#04aa6d]/60 hover:bg-white dark:border-[#2d3834] dark:bg-[#222b28] dark:text-[#ddd] dark:hover:border-[#89d185]/50 dark:hover:bg-[#26302c]',
+                  ? 'border-teal-600 bg-white shadow-sm ring-1 ring-teal-600/20 dark:border-teal-500 dark:bg-teal-950/35 dark:text-teal-50 dark:ring-teal-500/25'
+                  : 'border-neutral-200 bg-white text-neutral-800 hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-zinc-900 dark:text-neutral-200 dark:hover:bg-zinc-800',
               ].join(' ')}
             >
             <span>Çalışma stüdyosu</span>
             <span
-              className="font-mono text-xs text-[#3c9c6c] dark:text-[#89d185]"
+              className="font-mono text-xs text-teal-700 dark:text-teal-400"
               aria-hidden
             >
               ≡
             </span>
           </button>
         ) : null}
-        <h2 className="mb-4 border-b border-[#d9eee1] pb-3 text-lg font-semibold text-[#282c35] dark:border-[#333] dark:text-[#e8e8e8]">
+        <h2 className="mb-4 border-b border-neutral-200 pb-3 text-lg font-semibold text-neutral-900 dark:border-neutral-700 dark:text-neutral-100">
           {heading}
         </h2>
         {showEmptySearch ? (
           <p
-            className="rounded-md border border-[#cdebd8] bg-white/80 px-3 py-4 text-center text-sm text-[#5f6368] dark:border-[#3c4944] dark:bg-[#1e2523] dark:text-[#aeb4b2]"
+            className="rounded-md border border-neutral-200 bg-white px-3 py-4 text-center text-sm text-neutral-600 dark:border-neutral-600 dark:bg-zinc-900 dark:text-neutral-400"
             role="status"
           >
             Sonuç bulunamadı
@@ -140,10 +140,10 @@ export default function Sidebar({
           <nav aria-label="Ders listesi" className="space-y-6">
             {sections.map((section) => (
               <div key={section.sectionKey}>
-                <h3 className="mb-2 pl-1 text-xs font-bold uppercase tracking-wider text-[#3c9c6c] dark:text-[#89d185]">
+                <h3 className="mb-2 pl-1 text-xs font-semibold text-neutral-600 dark:text-neutral-400">
                   {section.sectionTitle}
                 </h3>
-                <ul className="ml-2 space-y-0.5 border-l-2 border-[#cdebd8] pl-3 dark:border-[#2d3834]">
+                <ul className="ml-2 space-y-0.5 border-l border-neutral-200 pl-3 dark:border-neutral-700">
                   {section.lessons.map((lesson) => {
                     const selected = lesson.id === selectedLessonId
                     const done = completedLessons.includes(lesson.id)
@@ -153,10 +153,10 @@ export default function Sidebar({
                           type="button"
                           onClick={() => handleLessonClick(lesson.id)}
                           className={[
-                            'group flex w-full items-start gap-2 rounded-r-md border-l-4 py-2.5 pl-3 pr-2 text-left text-sm transition-colors',
+                            'group flex w-full items-start gap-2 rounded-r-md border-l-[3px] py-2.5 pl-3 pr-2 text-left text-sm transition-colors',
                             selected
-                              ? 'border-l-[#04aa6d] bg-[#d9eee1] text-[#1a1e2e] shadow-sm dark:border-l-[#89d185] dark:bg-[#253329] dark:text-[#e8f8ef] dark:shadow-md'
-                              : 'border-l-transparent bg-transparent text-[#3c4043] hover:bg-white/80 dark:text-[#c9cfcc] dark:hover:bg-[#222b28]',
+                              ? 'border-l-teal-600 bg-white text-neutral-900 shadow-sm dark:border-l-teal-500 dark:bg-zinc-800 dark:text-neutral-50'
+                              : 'border-l-transparent bg-transparent text-neutral-700 hover:bg-white/70 dark:text-neutral-300 dark:hover:bg-zinc-800/70',
                           ].join(' ')}
                         >
                           <span
@@ -166,12 +166,12 @@ export default function Sidebar({
                             ].join(' ')}
                           >
                             {lesson.title}
-                            <span className="mt-0.5 block text-xs font-normal text-[#5f6368] dark:text-[#8f9a94]">
+                            <span className="mt-0.5 block text-xs font-normal text-neutral-500 dark:text-neutral-500">
                               {lesson.difficulty}
                             </span>
                           </span>
                           {done ? (
-                            <CheckIcon className="mt-0.5 shrink-0 text-[#04aa6d] dark:text-[#89d185]" />
+                            <CheckIcon className="mt-0.5 shrink-0 text-teal-600 dark:text-teal-400" />
                           ) : null}
                         </button>
                       </li>

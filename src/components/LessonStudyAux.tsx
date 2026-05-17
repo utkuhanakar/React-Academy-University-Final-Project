@@ -16,20 +16,20 @@ export default function LessonStudyAux({ lessonId }: LessonStudyAuxProps) {
   const extras = lessonExtraTasks(lessonId)
 
   return (
-    <div className="border-b border-emerald-200/80 bg-emerald-50/40 px-5 py-4 dark:border-emerald-900/40 dark:bg-emerald-950/15 lg:px-10">
+    <div className="border-b border-neutral-200 bg-neutral-50/90 px-5 py-4 dark:border-neutral-700 dark:bg-zinc-900/40 lg:px-10">
       <div className="mx-auto flex max-w-3xl flex-col gap-3">
         <details
           open={recapOpen}
           onToggle={(e) =>
             setRecapOpen((e.target as HTMLDetailsElement).open)
           }
-          className="rounded-xl border border-emerald-200 bg-white shadow-sm dark:border-emerald-900/55 dark:bg-[#1e2824]"
+          className="rounded-xl border border-neutral-200 bg-white shadow-sm dark:border-neutral-600 dark:bg-zinc-900/60"
         >
-          <summary className="cursor-pointer select-none px-4 py-3 text-sm font-bold text-emerald-900 dark:text-emerald-200">
+          <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
             Hızlı özet (tekrar okumayı kısalt)
           </summary>
-          <div className="border-t border-emerald-100 px-4 py-4 dark:border-emerald-900/35">
-            <div className="prose prose-sm prose-slate max-w-none dark:prose-invert">
+          <div className="border-t border-neutral-100 px-4 py-4 dark:border-neutral-700">
+            <div className="lesson-md prose prose-sm prose-slate max-w-none dark:prose-invert">
               <ReactMarkdown
                 remarkPlugins={markdownRemarkPlugins}
                 components={markdownComponents}

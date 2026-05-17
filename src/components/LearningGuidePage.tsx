@@ -38,11 +38,11 @@ export default function LearningGuidePage({
   const done = useMemo(() => new Set(completedLessonIds), [completedLessonIds])
 
   return (
-    <article className="border-b border-neutral-200 bg-gradient-to-b from-sky-50/80 via-white to-neutral-50 text-neutral-900 print:border-0 print:bg-white print:text-neutral-950 print:shadow-none dark:border-[#333] dark:from-sky-950/25 dark:via-[#1e1e1e] dark:to-[#181818] dark:text-[#ececec]">
+    <article className="border-b border-neutral-200 bg-gradient-to-b from-neutral-50 via-white to-neutral-50 text-neutral-900 print:border-0 print:bg-white print:text-neutral-950 print:shadow-none dark:border-[#333] dark:from-zinc-900/35 dark:via-[#1e1e1e] dark:to-[#181818] dark:text-[#ececec]">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-5 lg:px-8 lg:py-14">
         <header className="mb-10 border-b border-neutral-200 pb-8 dark:border-slate-700">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-700 dark:text-sky-400/95">
-            Tüm içerik erişimi · teknik doküman · ders haritası
+          <p className="text-xs font-medium tracking-tight text-neutral-600 dark:text-neutral-400">
+            Tüm içerik · teknik özet · ders haritası
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-neutral-950 dark:text-white sm:text-4xl">
             Öğrenme rehberi — React Akademi
@@ -55,13 +55,13 @@ export default function LearningGuidePage({
           <button
             type="button"
             onClick={onOpenStudio}
-            className="mt-6 rounded-xl border border-sky-600/50 bg-sky-600 px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-white shadow-sm transition hover:bg-sky-700 dark:border-sky-500/40 dark:bg-sky-800 dark:hover:bg-sky-700"
+            className="mt-6 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-neutral-800 dark:border-neutral-600 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
           >
-            Tekrar için Stüdyo’yu aç
+            Tekrar için stüdyoyu aç
           </button>
         </header>
 
-        <div className="prose prose-neutral max-w-none dark:prose-invert prose-headings:tracking-tight prose-p:text-[15px] prose-p:leading-relaxed prose-li:text-[15px]">
+        <div className="lesson-md prose prose-neutral max-w-none dark:prose-invert prose-headings:tracking-tight prose-p:text-[15px] prose-p:leading-relaxed prose-li:text-[15px] prose-a:text-emerald-800 hover:prose-a:underline dark:prose-a:text-emerald-400/95">
           <ReactMarkdown
             remarkPlugins={markdownRemarkPlugins}
             components={md}
@@ -84,7 +84,7 @@ export default function LearningGuidePage({
           <div className="mt-8 space-y-10">
             {GUIDE_SECTION_ORDER.map((mod) => (
               <div key={mod}>
-                <h3 className="text-base font-black uppercase tracking-wider text-sky-900 dark:text-sky-300/95">
+                <h3 className="text-base font-semibold text-neutral-800 dark:text-neutral-200">
                   {GUIDE_SECTION_TITLES[mod]}
                   <span className="ml-2 font-mono text-xs font-normal opacity-75">
                     ({mod})

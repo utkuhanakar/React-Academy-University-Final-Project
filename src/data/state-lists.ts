@@ -21,9 +21,9 @@ export const stateListsLessons: Lesson[] = [
 
 Bileşen gövdesinde \`if (!veri) return <Yukleniyor />\` deseni, iç içe ternary’leri azaltır.
 
-> **Pratik not:** “\`&&\` ile \`? :\` ne zaman?” — iki sonuç dengeli ise ternary; yalnızca “göster/gösterme” için \`&&\`.
+> **İpucu:** “\`&&\` ile \`? :\` ne zaman?” — iki sonuç dengeli ise ternary; yalnızca “göster/gösterme” için \`&&\`.
 
-> **Pratik not:** “React’ta \`if\` JSX içinde neden doğrudan yok?” — JSX bir ifade; if **ifadesi** olmadığı için blok yerine ternary veya önce hesaplanmış değişken kullanılır.
+> **İpucu:** “React’ta \`if\` JSX içinde neden doğrudan yok?” — JSX bir ifade; if **ifadesi** olmadığı için blok yerine ternary veya önce hesaplanmış değişken kullanılır.
 `.trim(),
     codeExamples: [
       {
@@ -104,11 +104,11 @@ Dizi elemanlarını JSX listesine dönüştürmek için \`items.map(item => <li 
 
 Liste **sıralanabilir**, **eleman eklenip çıkarılabilir** veya **filtrlenirse** indeks key yanıltıcıdır; mümkünse **sabit ve benzersiz id** (ör. veritabanı \`id\`) kullanın.
 
-> **Pratik not:** “\`key\` prop’u neden elemeye değil, listedeki kardeşlere ilişkindir?” — Reconciliation algoritması kardeş listeleri karşılaştırır.
+> **İpucu:** “\`key\` prop’u neden elemeye değil, listedeki kardeşlere ilişkindir?” — Reconciliation algoritması kardeş listeleri karşılaştırır.
 
-> **Pratik not:** “Virtual DOM nedir?” — Gerçek DOM’un hafif ağaç temsili; diff sonrası minimal gerçek DOM güncellemesi.
+> **İpucu:** “Virtual DOM nedir?” — Gerçek DOM’un hafif ağaç temsili; diff sonrası minimal gerçek DOM güncellemesi.
 
-> **Pratik not:** “key={Math.random()} neden kötü?” — Her render’da yeni key → tüm öğeler destroy/remount; state kaybı ve performans felaketi.
+> **İpucu:** “key={Math.random()} neden kötü?” — Her render’da yeni key → tüm öğeler destroy/remount; state kaybı ve performans felaketi.
 `.trim(),
     codeExamples: [
       {
@@ -207,9 +207,9 @@ Input’un **değeri** React state’inden gelir (\`value={state}\`) ve her değ
 
 \`ref\` ile DOM’dan okuma — basit formlarda da kullanılır; özette “iki yöntem farklı kullanım alanı” olarak bilinebilir.
 
-> **Pratik not:** “\`value\` verip \`onChange\` vermezsem?” — Uyarı / salt okunur hissi; kontrollü bileşen düzgün çalışmaz.
+> **İpucu:** “\`value\` verip \`onChange\` vermezsem?” — Uyarı / salt okunur hissi; kontrollü bileşen düzgün çalışmaz.
 
-> **Sık sorulan:** “Checkbox’ta \`value\` yerine?” — \`checked\` + \`onChange\`; seçim kutularında \`value\` farklı anlam taşır.
+> **Sıkça sorulan:** “Checkbox’ta \`value\` yerine?” — \`checked\` + \`onChange\`; seçim kutularında \`value\` farklı anlam taşır.
 `.trim(),
     codeExamples: [
       {
@@ -319,9 +319,9 @@ Tarayıcı, form gönderiminde sayfayı **yeniden yükleme** (tam sayfa navigati
 
 TypeScript’te \`React.FormEvent\` veya \`FormEvent<HTMLFormElement>\` kullanılabilir; projede \`e: FormEvent\` → build util \`React.FormEvent\` ile düzeltilir.
 
-> **Pratik not:** “\`onSubmit\` ile düğme \`onClick\` farkı?” — Enter ve form semantiği; birden çok gönderim yolu.
+> **İpucu:** “\`onSubmit\` ile düğme \`onClick\` farkı?” — Enter ve form semantiği; birden çok gönderim yolu.
 
-> **Pratik not:** “Neden bazen \`type=\\"button\\"\`?” — form içinde yanlışlıkla submit’i engellemek için.
+> **İpucu:** “Neden bazen \`type=\\"button\\"\`?” — form içinde yanlışlıkla submit’i engellemek için.
 `.trim(),
     codeExamples: [
       {

@@ -324,7 +324,7 @@ Tarayıcıya sızmak istenen değişken **VITE_** önekli olmalıdır (aksi duru
 
 | Tür | Veri kaynağı | Görünür bileşen |
 | --- | --- | --- |
-| Çoktan seçmeli | \`lesson.quiz\`, \`extraQuizChecks\` | **Quiz** |
+| Çoktan seçmeli | \`lesson.quiz\`, \`extraQuizChecks\` | **Quiz** (**getShuffledQuizView** ile ekranda şık sırası deterministik olarak karıştırılır — veriyi değiştirmez). |
 | Sürükleyerek kavram sırası | \`dragOrderActivity\` | **DragOrderChallenge** |
 | Kod şeridi sırası | \`dragCodeActivity\` | **DragCodeChallenge** |
 | Cloze | \`clozeActivity\` (**\`___\`** yer tutucuları) | **ClozeChallenge** |
@@ -346,7 +346,53 @@ ES6 ve JSX başlangıç → bileşenler ve props → state, listeler ve formlar 
 
 ## Uzman modülü kart dizilişi (iç içerik referansı)
 
-Kavram sırasına uygun okuma sırası: **expert-site-mimarisi** → **expert-performans-ve-bundle** → **expert-testing-rtl-paradigma** → **expert-build-env-ve-yayinlama** → **expert-todo-buyuk-calismasi**.
+Kavram sırasına uygun okuma sırası: **expert-site-mimarisi** → **expert-performans-ve-bundle** → **expert-testing-rtl-paradigma** → **expert-build-env-ve-yayinlama** → **expert-todo-buyuk-calismasi**.  
+Not: öğrenci arayüzünde ders \`id\` değerinde bağlantılar ASCII ile \`expert-build-env-ve-yayinlama\` yazılır; Türkçe anlam olarak **“yayımlama”** (ortamını dağıtma) bağlamıdır.
+
+---
+
+## “Hemen bu dosyayı aç” — viva / sınıf sınavı tarzı özet
+
+Amaç: yalnızca bu başlığı ve yukarıdaki dosya haritasını kullanarak hocanın sorabileceği “sistem nerede oturmuş?” sorularına hızlı cevap.
+
+### Yerleşim (layout) ve kart çerçevesi
+
+- **Ana üç sütunun birleştiği yer:** **App.tsx** — panel seçimi (\`lesson\`, \`skills\`, \`categories\`, \`guide\`) ve seçili ders.
+- **Tek ders kartının tamamı (Markdown gövdesi + quiz çerçevesi):** **LessonCard.tsx** (\`lesson-md prose\`). Kenarlık/yarıçap değişimi çoğu zaman buradaki Tailwind yardımcılarından.
+- **Modül özeti kutuları (öğrenme çıktıları listesi):** **CategoriesPage.tsx** — metinleri Markdown olarak çizer (\`DEFAULT_TASKS\`); **lesson id** kod parçası görünümü burada oluşur.
+- **Çalışma stüdyosu:** **SkillsStudioPage.tsx** — kartlar ve peş peşe yolda kullanılan **Quiz** bileşeni; şık sırasını **lessonQuizHelpers** karıştırır.
+
+### Metin işleme
+
+- **Ders Markdown’ı işleyen bileşen eşlemesi:** **MarkdownCodeBlocks.tsx** — başlıkların anchor planı (**LessonReadingGuide** ile) burada bağlanır.
+- **Globall stillerde satır içi kod / tipografi tuzakları:** **index.css** (\`.lesson-md\` alt seçiciler).
+
+### Öğretim içeriği nereden gelir?
+
+- **Bireysel kart kayıtları:** modül bazlı (**intro.ts**, **components.ts**, **state-lists.ts**, **hooks.ts**, **expert.ts**) + gelişmiş ders paketleri **state-lists** üzerinden.
+- **Birleştirilmiş dizi:** **src/data/lessons.ts**.
+- **Yardımcı özet blokları:** **lessonStudyAids.ts**.
+
+### Quiz ve sıra etkinlikleri
+
+- **Doğru cevap metni ile şık eşleşmesini doğrula:** **npm run validate-quizzes** → **quizCorrectAnswerIndex**.
+- **Arayüzde şık yerinin her seferinde aynı harfede olmaması:** **getShuffledQuizView(scopeKey, …)** — veri sırasından bağımsız gösterim; \`correctAnswer\` dizide birebir aynı kalmalıdır.
+- **Sürükleyerek sıra — geribildirim:** **DragOrderChallenge.tsx**’te “**Sıramı doğrula**” ile satır yeşili/turuncu ve “kaç öğe doğru yerde?” özeti görünür; tam sıra tutunca üst bileşene **true** bildirilir.
+
+### Kalıcı veri anahtarı (özet)
+
+- **Tam ilerleme:** \`react-akademi:user-progress-v1\` (**userProgressStorage.ts** ile okunup yazılır).
+
+---
+
+### Tek tabloda katman fotoğrafı
+
+| Soru kalıbı | Cevap özü |
+| --- | --- |
+| “SPA nereden başlıyor?” | index.html tema script’i → main.tsx StrictMode → App |
+| “Modül seçince ne dosya işler?” | App.tsx içinde Sidebar + seçilen LessonCard veya CategoriesPage vb. |
+| “Yeni ders ekliyorum?” | İlgili data/*.ts nesnesini yaz → lessons.ts sırasına ekle → validate-all |
+| “Renk/teal/emerald nerden?” | İlgili bileşende className; global gövde index.css |
 
 ---
 

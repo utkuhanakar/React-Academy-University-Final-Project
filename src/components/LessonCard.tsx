@@ -7,13 +7,16 @@ import {
   createMarkdownComponents,
   markdownRemarkPlugins,
 } from './MarkdownCodeBlocks'
+import LessonReadingGuide from './LessonReadingGuide'
 import ClozeChallenge from './lessonActivities/ClozeChallenge'
 import DragCodeChallenge from './lessonActivities/DragCodeChallenge'
 import DragOrderChallenge from './lessonActivities/DragOrderChallenge'
 import Quiz from './Quiz'
 import {
+  getShuffledQuizView,
   resolveLessonQuizCorrectIndex,
 } from '../utils/lessonQuizHelpers'
+import { precomputeLessonH2Anchors } from '../utils/lessonReadingMeta'
 
 export interface LessonCardProps {
   /** Gösterilecek ders kaydı. */
@@ -37,7 +40,15 @@ export default function LessonCard({
   onQuizPassedChange,
   onInteractiveGatesChange,
 }: LessonCardProps) {
-  const markdownComponents = useMemo(() => createMarkdownComponents(), [])
+  const h2AnchorPlan = useMemo(
+    () => precomputeLessonH2Anchors(lesson.content),
+    [lesson.content],
+  )
+
+  const markdownComponents = useMemo(
+    () => createMarkdownComponents({ h2AnchorPlan }),
+    [h2AnchorPlan],
+  )
   const moduleAdi = moduleBasliklari[lesson.moduleId]
 
   const quickChecks = useMemo(
@@ -55,6 +66,15 @@ export default function LessonCard({
         ),
       ),
     [lesson.title, quickChecks],
+  )
+
+  /** Doğru cevap daima ilk veri sırasından metin ile eşleşir; ekranda şıklar ise ders+slot’a göre karışır. */
+  const shuffledQuizViews = useMemo(
+    () =>
+      quickChecks.map((q, i) =>
+        getShuffledQuizView(`${lesson.id}:check:${i}`, q.choices, q.correctAnswer),
+      ),
+    [lesson.id, quickChecks],
   )
 
   const allChecksValid = checkIndices.every((ix) => ix >= 0)
@@ -95,26 +115,27 @@ export default function LessonCard({
       <div className="mx-auto max-w-3xl px-5 py-10 lg:px-8 lg:py-12">
         <header className="mb-10 border-b border-neutral-200 pb-8 dark:border-[#3c3c3c]">
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="inline-block rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium uppercase tracking-wide text-violet-800 dark:border-violet-500/40 dark:bg-violet-950/60 dark:text-violet-200">
+            <span className="inline-block rounded-md border border-neutral-200 bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-700 dark:border-neutral-600 dark:bg-neutral-800/70 dark:text-neutral-200">
               {moduleAdi}
             </span>
-            <span className="inline-block rounded-full border border-neutral-300 bg-neutral-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-neutral-600 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#c8c8c8]">
+            <span className="inline-block rounded-md border border-neutral-200 bg-white px-2.5 py-1 text-xs font-medium text-neutral-600 dark:border-neutral-600 dark:bg-zinc-800/70 dark:text-neutral-300">
               {lesson.difficulty}
             </span>
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-[#f3f3f3] sm:text-3xl">
             {lesson.title}
           </h1>
+          <LessonReadingGuide lesson={lesson} />
         </header>
 
         <section className="mb-12" aria-labelledby="lesson-content-heading">
           <h2
             id="lesson-content-heading"
-            className="mb-4 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-[#cccccc]"
+            className="mb-4 text-sm font-medium text-neutral-600 dark:text-neutral-400"
           >
             Konu anlatımı
           </h2>
-          <div className="prose prose-sm sm:prose-base prose-slate dark:prose-invert prose-headings:scroll-mt-20 max-w-full overflow-x-auto dark:prose-blockquote:border-l-emerald-500 dark:prose-blockquote:bg-emerald-950/30 prose-a:text-green-700 prose-a:no-underline prose-blockquote:border-l-green-600 prose-blockquote:bg-green-50/60 prose-blockquote:py-0.5 prose-blockquote:pl-4 prose-blockquote:text-neutral-800 hover:prose-a:underline dark:prose-a:text-green-400 dark:prose-blockquote:text-neutral-200">
+          <div className="lesson-md prose prose-sm sm:prose-base prose-slate dark:prose-invert prose-headings:scroll-mt-20 max-w-full overflow-x-auto prose-a:text-emerald-700 prose-a:no-underline prose-blockquote:border-l-stone-400 prose-blockquote:bg-stone-50/90 prose-blockquote:py-2 prose-blockquote:pl-4 prose-blockquote:text-neutral-700 hover:prose-a:underline dark:prose-a:text-emerald-400/95 dark:prose-blockquote:border-stone-600 dark:prose-blockquote:bg-stone-900/35 dark:prose-blockquote:text-neutral-200">
             <ReactMarkdown
               remarkPlugins={markdownRemarkPlugins}
               components={markdownComponents}
@@ -130,7 +151,7 @@ export default function LessonCard({
         >
           <h2
             id="lesson-examples-heading"
-            className="mb-4 text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-[#cccccc]"
+            className="mb-4 text-sm font-medium text-neutral-600 dark:text-neutral-400"
           >
             Örnek kodlar
           </h2>
@@ -145,14 +166,14 @@ export default function LessonCard({
                     {ornek.caption}
                   </p>
                 ) : null}
-                <div className="max-w-full overflow-hidden rounded-lg border border-[#44475a] shadow-md ring-1 ring-black/5 dark:ring-white/10">
+                <div className="max-w-full overflow-hidden rounded-md border border-[#44475a] shadow-sm ring-1 ring-black/5 dark:ring-white/10">
                   <SyntaxHighlighter
                     language="tsx"
                     style={dracula}
                     PreTag="div"
                     customStyle={{
                       margin: 0,
-                      borderRadius: 12,
+                      borderRadius: 8,
                       fontSize: 'clamp(0.7rem, 2.8vw, 0.8125rem)',
                       lineHeight: 1.55,
                       padding: '0.75rem 0.875rem',
@@ -201,7 +222,7 @@ export default function LessonCard({
         ) : null}
 
         <section
-          className="mb-12 rounded-md border border-sky-200 bg-sky-50 p-6 dark:border-sky-900/60 dark:bg-sky-950/35"
+          className="mb-12 rounded-lg border border-neutral-200/90 bg-neutral-50/95 p-6 dark:border-neutral-600 dark:bg-neutral-900/40"
           aria-labelledby="lesson-quiz-heading"
         >
           <h2
@@ -214,18 +235,27 @@ export default function LessonCard({
             <div className="space-y-8">
               {quickChecks.map((q, i) => {
                 const ix = checkIndices[i] ?? -1
+                const shuffle = shuffledQuizViews[i]
+                const showIx =
+                  shuffle && shuffle.displayCorrectIndex >= 0
+                    ? shuffle.displayCorrectIndex
+                    : ix
+                const opts =
+                  shuffle && shuffle.displayChoices.length === q.choices.length
+                    ? shuffle.displayChoices
+                    : [...q.choices]
                 return (
                   <div key={`${lesson.id}-check-${i}`}>
                     {quickChecks.length > 1 ? (
-                      <p className="mb-2 text-xs font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300/90">
+                      <p className="mb-2 text-xs font-semibold tracking-tight text-neutral-600 dark:text-neutral-400">
                         Soru {i + 1} / {quickChecks.length}
                       </p>
                     ) : null}
                     <Quiz
                       key={`${lesson.id}-check-${i}`}
                       question={q.question}
-                      options={q.choices}
-                      correctAnswerIndex={ix}
+                      options={opts}
+                      correctAnswerIndex={showIx >= 0 ? showIx : ix}
                       onQuizPassedChange={(p) => {
                         setChecksPassed((prev) =>
                           prev.map((v, j) => (j === i ? p : v)),

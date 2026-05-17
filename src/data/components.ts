@@ -22,13 +22,13 @@ Bugün **işlev bileşenleri** tercih edilmesinin başlıca nedenleri:
 - **Concurrent / yeni React özellikleri** (ör. Suspense ile veri desenleri) işlev bileşeni + hooks çizgisinde geliştirilir.
 - **Mental model**: “props girer, JSX çıkar” — yan etkiler \`useEffect\` ile etiketlenmiş bloklarda; bu, takım içi tutarlılığı artırır.
 
-> **Pratik not:** “Class bileşende neden \`this\` bağlama gerekir, işlev bileşende neden gerekmez?” — olay işleyicilerinde class’ta \`this.method\` veya ok fonksiyon sınıf alanı vs işlev bileşende düz fonksiyon.
+> **İpucu:** “Class bileşende neden \`this\` bağlama gerekir, işlev bileşende neden gerekmez?” — olay işleyicilerinde class’ta \`this.method\` veya ok fonksiyon sınıf alanı vs işlev bileşende düz fonksiyon.
 
 ## Props ve tek yönlü veri akışı
 
 **Props** üst bileşenden alt bileşene **salt okunur** veri taşır; alt bileşen props’u “üsteki state’i doğrudan değiştirmek için” kullanmaz — üst, **callback** (\`onDegisti\` gibi) vererek çocuğa “ne zaman ve nasıl güncelleneceği” hakkında bir kanal açar. Bu, React’in **tek yönlü (unidirectional) veri akışı** modelidir: veri aşağı, olaylar yukarı.
 
-> **Pratik not:** “Props mutasyona uyar mı?” — props nesnesini çocukta doğrudan değiştirmek antidir; üst durumu güncellemek üstteki \`setState\`/setter ile yapılır (immutable güncelleme).
+> **İpucu:** “Props mutasyona uyar mı?” — props nesnesini çocukta doğrudan değiştirmek antidir; üst durumu güncellemek üstteki \`setState\`/setter ile yapılır (immutable güncelleme).
 `.trim(),
     codeExamples: [
       {
@@ -143,9 +143,9 @@ Alt bileşen, gelen props’u **kaynağı kabul eder**; üst bileşenin state’
 
 Ağaçta bir düğüm render edildiğinde, o render için props değerleri **üstten hesaplanır** ve çocuğa iletilir. Aynı props ile çocuk deterministik JSX üretmeye çalışır (saf bileşen düşüncesi). Bu, debug ve test edilebilirliği artırır.
 
-> **Pratik not:** “Props vs state” — props dış dünyadan gelen **parametre**, state bileşenin içinde tuttuğu **değiştirilir veri**; ikisini birbirine katmayın.
+> **İpucu:** “Props vs state” — props dış dünyadan gelen **parametre**, state bileşenin içinde tuttuğu **değiştirilir veri**; ikisini birbirine katmayın.
 
-> **Pratik not:** “Prop drilling” — props zinciri çok uzadığında context veya durum yükseltme stratejileri sorulabilir; tanımı bilin.
+> **İpucu:** “Prop drilling” — props zinciri çok uzadığında context veya durum yükseltme stratejileri sorulabilir; tanımı bilin.
 `.trim(),
     codeExamples: [
       {
@@ -236,9 +236,9 @@ Yıkımlamada varsayılan değer verebilirsiniz: \`function K({ baslik = 'Adsız
 
 \`const { cocuk, ...diger } = props\` — çocuğu ve diğer DOM özniteliklerini ayırmak için sık kullanılır (wrapper bileşenler).
 
-> **Pratik not:** “Props yıkımlaması, props nesnesini mutasyona uğratır mı?” — Hayır; yıkımlama yeni yerel bağlamalar üretir, üstün ilettiği nesneyi değiştirmek zorunda değilsiniz.
+> **İpucu:** “Props yıkımlaması, props nesnesini mutasyona uğratır mı?” — Hayır; yıkımlama yeni yerel bağlamalar üretir, üstün ilettiği nesneyi değiştirmek zorunda değilsiniz.
 
-> **Pratik not:** “Nested props güvenli mi?” — İç içe nesnede opsiyonel zincir (\`props?.a?.b\`) veya varsayılanlar; undefined erişimi sık tuzak soru tipidir.
+> **İpucu:** “Nested props güvenli mi?” — İç içe nesnede opsiyonel zincir (\`props?.a?.b\`) veya varsayılanlar; undefined erişimi sık tuzak soru tipidir.
 `.trim(),
     codeExamples: [
       {
@@ -334,19 +334,41 @@ export default function App() {
     content: `
 ## \`children\` nedir?
 
-JSX’te bir bileşenin açılış ve kapanış etiketleri arasındaki içerik, **\`children\`** prop’u olarak iletilir. Tür: genelde \`React.ReactNode\` — metin, eleman, dizi veya null olabilir.
+JSX’te bir bileşenin **açılış ve kapanış etiketi arasında** yazdığınız her şey, o bileşenin **children** prop’u olarak alt tarafa aktarılır. Bu sadece “metin sıkıştırmak” değildir — başlık, liste, bileşik ağaç veya boş bileşik çocuk bile olabilir.
 
-## Bileşim (composition)
+TypeScript kullanıyorsanız en güvenilir geniş tür genelde **\`React.ReactNode\`** kabulü olur (metin dahil çoğu senaryoya uyar).
 
-\`children\` ile **çerçeve** bileşenleri yazarsınız: \`Kart\`, \`Modal\`, \`Layout\` içeriği dışarıdan alır; bu, prop drilling’i azaltır ve “slot” benzeri esneklik sağlar.
+## Composition (bileştirerek kurmak)
 
-## \`children\` ile props çakışması
+Bir kart, yan menü veya modal kabuğunda dış görünüm ve boşluğu bileşen belirler; asıl içerik ise dışarıdan gelir. Bu “yer tutucunun” adı çoğu kez doğrudan \`children\` olur.
 
-Aynı anda hem \`children\` hem açık prop’lar kullanılabilir; API tasarımında “zorunlu içerik \`children\` mı yoksa adlandırılmış prop mu?” tutarlılığı önemlidir.
+Böylece tekrarı azaltır, **prop drilling** ihtiyacını gerçekten azaltabileceğiniz yerleri netleştirirsiniz.
 
-> **Pratik not:** “\`children\` her zaman JSX metni midir?” — Hayır; herhangi bir \`ReactNode\` olabilir (ör. koşullu alt ağaç).
+## Props ile yan yana
 
-> **Pratik not:** “Render props vs children” — biri fonksiyon döndürür (\`{() => ...}\`), diğeri doğrudan içerik; iki deseni ayırmak sık gerekiyor.
+\`children\` normal bir prop alanıdır — \`${'{ baslik, children }'}\` yan yanına sırayla çekilebilir. İsim çakışması riski doğal olarak daha düşüktür; mesele daha çok **API seçimi**:
+
+- Gövdenin her zaman “ana akış içeriği” olduğundan eminseniz \`children\` çok doğal okunur.
+
+- Gövdenin üç farklı bölümde **zorunlu** olduğu yerlerde ise \`ust\`, \`govde\`, \`footer\` gibi adları açık seçmek çoğu kez daha anlaşılır olabilir — burada iki yolu karışık seçmeyin.
+
+## Render props’a kısa not
+
+“Alt bileşeni veriyla beraber oluşturmak” istendiğinde bazen \`children\` yerine **fonksiyon** da istenir: \`(x) => JSX\`. Bu bile kompozisyondur; okuma maliyeti yüksek olabileceği için gerçekten ihtiyaç varsa seçilir.
+
+## Hata ayıklama ipuçları
+
+\`undefined\` veya yanlış tip çoğu zaman kapanış etiketi yanlışından ya da koşullu JSX yazımından gelir: Örneğin \`sayi && <span>Örnek</span>\` ifadesinde \`sayi\` \`0\` olduğunda arayüzde \`0\` görülmesini beklemeyebilirsiniz — \`&&\` tuzağını ilgili JSX dersinde netleştirin.
+
+## \`StrictMode\` ile geliştirme
+
+Geliştirme ortamında React’ın ek çalışma davranışları bazen bileşeni iki kez “deneme” sırasına sokabilir; bu sırf geliştirme gözlemini etkileyebilir. \`children\` içinden yan etki üretmeye çalışmayın — o işler olay veya efekt ile kalmalıdır.
+
+> **İpucu:** **children** için yalnızca düz yazı olduğunu varsayıp blokları sıkı bırakmayın — **null**, **dizi** ya da daha karmaşık **ReactNode** dalları da gelir.
+
+> **İpucu:** Her render’da yeni oluşturulan küçük fonksiyon veya nesne referansları, alt dalların sık sık yeniden görüntülenmesine yol açabilir — bu doğrudan \`children\` yüzünden olmayabilir; performansa duyarlıysanız referansları stabil tutmayı değerlendirin.
+
+> **Sıkça sorulan:** \`children\` ile \`dangerouslySetInnerHTML\` aynı şey mi? Hayır. Biri React ağacı üzerinden güvenilir render akışına girer; diğeri tarayıcıya ham HTML sokar — XSS güvenlik riski taşır, yalnızca çok gerektiği yer ve güvenilir kaynakla kullanılır.
 `.trim(),
     codeExamples: [
       {
@@ -364,6 +386,38 @@ function Kutu({ baslik, children }: KutuProps) {
 
 // Kullanım: <Kutu baslik="Özet">...</Kutu>`,
       },
+      {
+        title: 'children + yan alan için adlandırılmış prop',
+        code: `type GovdeProps = {
+  ustBilgi: React.ReactNode
+  children: React.ReactNode
+}
+
+function Govde({ ustBilgi, children }: GovdeProps) {
+  return (
+    <article style={{ maxWidth: 560, margin: '0 auto' }}>
+      <header style={{ opacity: 0.85 }}>{ustBilgi}</header>
+      <main style={{ marginTop: 12 }}>{children}</main>
+    </article>
+  )
+}`,
+      },
+      {
+        title: 'Koşullu children güvenli paslama',
+        code: `type BilgiProps = {
+  uyariMi: boolean
+  children: React.ReactNode
+}
+
+function BilgiStripe({ uyariMi, children }: BilgiProps) {
+  const arkaplan = uyariMi ? '#fff7ed' : '#f8fafc'
+  return (
+    <div style={{ padding: '8px 10px', background: arkaplan, borderRadius: 6 }}>
+      {children}
+    </div>
+  )
+}`,
+      },
     ],
     quiz: {
       question:
@@ -377,6 +431,44 @@ function Kutu({ baslik, children }: KutuProps) {
       correctAnswer:
         '`children` yalnızca düz metin (string) olabilir; başka hiçbir tür olamaz',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`function Govde({ children }: { children: React.ReactNode })` içinde `{}` blokları JSX’te neyi ifade eder?',
+        choices: [
+          'JavaScript ifadesini JSX içine süzdürerek `children` değerinin gerçekten render’a katılması',
+          '`children` alanının mutlaka doğrudan dize olarak dönmesi gerektiğini bildirir',
+          'CSS seçiciyi devreye alır',
+          '`children` alanının yalnızca class bileşenlerinde olduğunu bildirir',
+        ],
+        correctAnswer:
+          'JavaScript ifadesini JSX içine süzdürerek `children` değerinin gerçekten render’a katılması',
+      },
+      {
+        question:
+          'Şu JSX’te `Panel` bileşeni `children` ile ne alır? `<Panel><span>A</span><span>B</span></Panel>`',
+        choices: [
+          'İki yan yana JSX öğesi birlikte `children` koleksiyonuna aktarılabilir — React bunları ayrı çocuklar olarak taşır',
+          '`children` sırf `null` olmalıdır; başka seçenek yoktur',
+          'React yan yana JSX’i zorla tek düz yazı olarak birleştirir (`"AB"` gibi) ve başka seçenek bırakmaz',
+          '`children` yalnızca ilk etiketi alır çünkü tek çocuk kuralı geçerlidir',
+        ],
+        correctAnswer:
+          'İki yan yana JSX öğesi birlikte `children` koleksiyonuna aktarılabilir — React bunları ayrı çocuklar olarak taşır',
+      },
+      {
+        question:
+          '“Render prop” yaklaşımında `children` bazen fonksiyon olabilir çünkü alt bileşen neyi oluşturacağını?',
+        choices: [
+          'Üst bileşenden gelen veriyle bileşimin kendisi koşulla karar etmek için',
+          '`document.createElement`’i sıfırdan çağırmak için — React olmadan',
+          '`useEffect`’i mount’tan önce sıfırdan kurmak için',
+          '`dangerouslySetInnerHTML` gereksiz olsun diye',
+        ],
+        correctAnswer:
+          'Üst bileşenden gelen veriyle bileşimin kendisi koşulla karar etmek için',
+      },
+    ],
     dragOrderActivity: {
       title: 'Alıştırma — composition adımları',
       description: '`children` ile çerçeve bileşen kurma sırası.',
@@ -435,9 +527,9 @@ HTML’de öznitelik **küçük harf** \`onclick\` olabilir; **JSX** ise DOM öz
 
 Handler’a argüman vermek için \`onClick={() => sec(id)}\` veya \`onClick={(e) => sec(id, e)}\` kullanılır. Doğrudan \`onClick={sec(id)}\` yazmak **hemen çağırır**.
 
-> **Pratik not:** “Sentetik olay ve native olay farkı?” — \`preventDefault\`/pooling (React 18 öncesi pooling vurgusu ders kitaplarında kalabilir) — asıl güç sentetik sarmalamada tutarlı davranış oluşturmak.
+> **İpucu:** “Sentetik olay ve native olay farkı?” — \`preventDefault\`/pooling (React 18 öncesi pooling vurgusu ders kitaplarında kalabilir) — asıl güç sentetik sarmalamada tutarlı davranış oluşturmak.
 
-> **Pratik not:** \`onClick={handler}\` ile \`onClick={() => handler('a')}\` farkı — ilki referans, ikisi tıklanınca çağrılan kapama (closure).
+> **İpucu:** \`onClick={handler}\` ile \`onClick={() => handler('a')}\` farkı — ilki referans, ikisi tıklanınca çağrılan kapama (closure).
 `.trim(),
     codeExamples: [
       {

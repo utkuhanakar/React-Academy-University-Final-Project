@@ -14,7 +14,7 @@ import {
   type ExtendedUserProgressV1,
   type SkillsStudioTabId,
 } from '../utils/extendedProgress'
-import { resolveLessonQuizCorrectIndex } from '../utils/lessonQuizHelpers'
+import { getShuffledQuizView } from '../utils/lessonQuizHelpers'
 import {
   buildRandomMixedPracticePathOrder,
   isValidPathOrder,
@@ -116,22 +116,31 @@ export default function SkillsStudioPage({
     setPathQuizEpoch((n) => n + 1)
   }, [updateExtended])
 
-  const pathCorrectIdx = step
-    ? resolveLessonQuizCorrectIndex(
-        step.quiz.choices,
-        step.quiz.correctAnswer,
-        step.moduleLabel,
-      )
-    : -1
+  const activeDrill =
+    SKILLS_STUDIO_DRILLS[drillIx] ?? SKILLS_STUDIO_DRILLS[0]
 
-  const activeDrill = SKILLS_STUDIO_DRILLS[drillIx] ?? SKILLS_STUDIO_DRILLS[0]
-  const drillCorrectIx = activeDrill
-    ? resolveLessonQuizCorrectIndex(
-        activeDrill.quiz.choices,
-        activeDrill.quiz.correctAnswer,
-        activeDrill.title,
-      )
-    : -1
+  const drillQuizView = useMemo(() => {
+    if (!activeDrill) return null
+    return getShuffledQuizView(
+      `${activeDrill.id}:studio-drill:v1`,
+      activeDrill.quiz.choices,
+      activeDrill.quiz.correctAnswer,
+    )
+  }, [activeDrill])
+
+  const pathQuizView = useMemo(() => {
+    if (!step) return null
+    return getShuffledQuizView(
+      `${step.id}:practice-path:v1`,
+      step.quiz.choices,
+      step.quiz.correctAnswer,
+    )
+  }, [step])
+
+  const drillQuizOk =
+    drillQuizView != null && drillQuizView.displayCorrectIndex >= 0
+  const pathQuizOk =
+    pathQuizView != null && pathQuizView.displayCorrectIndex >= 0
 
   const pathPrefs = extended.pathPreferences ?? defaultPathPreferences()
 
@@ -194,26 +203,26 @@ export default function SkillsStudioPage({
 
   const tabCls = (active: boolean) =>
     [
-      'rounded-xl px-4 py-3 text-sm font-bold transition border-2',
+      'rounded-lg border px-4 py-2.5 text-sm font-medium transition',
       active
-        ? 'border-green-600 bg-green-50 text-green-950 shadow-inner dark:border-[#89d185] dark:bg-[#1e2d24] dark:text-[#d8f6e6]'
-        : 'border-neutral-200 bg-white text-neutral-700 hover:border-green-600/40 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#d4d4d4]',
+        ? 'border-neutral-800 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
+        : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:bg-zinc-800 dark:text-neutral-200 dark:hover:bg-zinc-700',
     ].join(' ')
 
   return (
-    <article className="border-b border-neutral-200 bg-gradient-to-b from-green-950/10 via-white to-neutral-50 text-neutral-900 dark:border-[#333] dark:from-green-950/15 dark:via-[#1e1e1e] dark:to-[#181818] dark:text-[#ececec]">
+    <article className="border-b border-neutral-200 bg-gradient-to-b from-neutral-50 via-white to-neutral-50 text-neutral-900 dark:border-[#333] dark:from-zinc-900/30 dark:via-[#1e1e1e] dark:to-[#181818] dark:text-[#ececec]">
       <div className="mx-auto max-w-6xl px-5 py-10 lg:px-8 lg:py-14">
         <header className="mb-8 border-b border-neutral-200 pb-8 dark:border-slate-700">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-green-700 dark:text-green-400/90">
-            Özet · alıştırma · kalıcı ilerleme
+          <p className="text-xs font-medium tracking-tight text-neutral-600 dark:text-neutral-400">
+            Özet · alıştırma · kayıtlı ilerleme
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-neutral-950 dark:text-white sm:text-4xl">
             Çalışma stüdyosu
           </h1>
-          <div className="prose prose-sm prose-slate dark:prose-invert mt-4 max-w-3xl text-neutral-700 dark:text-slate-300">
+          <div className="lesson-md prose prose-sm prose-slate dark:prose-invert mt-4 max-w-3xl text-neutral-700 dark:text-neutral-300 prose-a:text-emerald-800 hover:prose-a:underline dark:prose-a:text-emerald-400/95">
             <ReactMarkdown remarkPlugins={markdownRemarkPlugins} components={md}>
-              {`Burada **quiz ve kısa pekiştirmeler**, **hatırlatıcı kod kartları**
-ve **peş peşe alıştırma yolu** bulunur. Hesabınızla oturum açıldığında yol üzerindeki sayaçlar **isteğe bağlı bulut ile senkronize** kalabilir.`}
+              {`Bu bölümde **quiz**, kısa tekrarlar, **özet kartları** ve **ardışık alıştırma yolu** var.
+Oturum açtıysanız bazı sayaçlar isteğe bağlı olarak bulutta da tutulabilir.`}
             </ReactMarkdown>
           </div>
         </header>
@@ -320,12 +329,12 @@ ve **peş peşe alıştırma yolu** bulunur. Hesabınızla oturum açıldığın
               <p className="mb-6 text-xl font-semibold text-neutral-900 dark:text-[#ececec]">
                 {activeDrill?.title}
               </p>
-              {activeDrill && drillCorrectIx >= 0 ? (
+              {activeDrill && drillQuizView && drillQuizOk ? (
                 <Quiz
-                  key={activeDrill.id}
+                  key={`${activeDrill.id}-${drillIx}`}
                   question={activeDrill.quiz.question}
-                  options={activeDrill.quiz.choices}
-                  correctAnswerIndex={drillCorrectIx}
+                  options={drillQuizView.displayChoices}
+                  correctAnswerIndex={drillQuizView.displayCorrectIndex}
                 />
               ) : (
                 <p className="text-sm text-red-600 dark:text-red-300">
@@ -435,7 +444,7 @@ ve **peş peşe alıştırma yolu** bulunur. Hesabınızla oturum açıldığın
                   </select>
                 </label>
               </div>
-              <p className="mt-3 text-[11px] leading-relaxed text-blue-920/95 dark:text-blue-100/85">
+              <p className="mt-3 text-[11px] leading-relaxed text-blue-900/95 dark:text-blue-100/85">
                 Zamanlı mod sadece bu sekmedeki peş peşe yolu etkiler. Seri günlük: peş peşe yolu veya tamamlanan
                 dersler ilk kez olduğunda (yerel tarih) artırılır — aynı gün sürekli yanıt saymaz ama doğru aktivite
                 yeterlidir.
@@ -488,7 +497,7 @@ ve **peş peşe alıştırma yolu** bulunur. Hesabınızla oturum açıldığın
             </div>
 
             <div className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-[#474747] dark:bg-[#252526]">
-              {step && pathCorrectIdx >= 0 ? (
+              {step && pathQuizView && pathQuizOk ? (
                 <>
                   <p className="mb-1 text-xs font-bold uppercase tracking-wide text-violet-600 dark:text-violet-400">
                     {step.moduleLabel} · Soru {safeCursor + 1} / {pathLen}
@@ -496,8 +505,8 @@ ve **peş peşe alıştırma yolu** bulunur. Hesabınızla oturum açıldığın
                   <Quiz
                     key={`${safeCursor}-${pathQuizEpoch}-${pathPrefs.timedModeEnabled}-${pathPrefs.secondsPerQuestion}`}
                     question={step.quiz.question}
-                    options={step.quiz.choices}
-                    correctAnswerIndex={pathCorrectIdx}
+                    options={pathQuizView.displayChoices}
+                    correctAnswerIndex={pathQuizView.displayCorrectIndex}
                     timedSecondsBudget={
                       pathPrefs.timedModeEnabled
                         ? pathPrefs.secondsPerQuestion

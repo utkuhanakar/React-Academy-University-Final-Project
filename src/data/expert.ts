@@ -20,9 +20,9 @@ export const expertLessons: Lesson[] = [
 
 Reducer **yeni state** döndürmelidir; eski state’i mutasyona uğratmayın. İç içe nesnelerde spread veya küçük yardımcılar tercih edilir.
 
-> **Pratik not:** “useState ile useReducer seçimi?” — Basit skaler veya tek nesne: useState; çok adımlı, raporlanabilir iş kuralları: reducer daha okunaklı olabilir.
+> **İpucu:** “useState ile useReducer seçimi?” — Basit skaler veya tek nesne: useState; çok adımlı, raporlanabilir iş kuralları: reducer daha okunaklı olabilir.
 
-> **Pratik not:** “Reducer saf fonksiyon mu?” — Evet; yan etki, API çağrısı reducer içinde **olmalı değildir**; yan etkiler useEffect / event handler’da kalır.
+> **İpucu:** “Reducer saf fonksiyon mu?” — Evet; yan etki, API çağrısı reducer içinde **olmalı değildir**; yan etkiler useEffect / event handler’da kalır.
 `.trim(),
     codeExamples: [
       {
@@ -138,9 +138,9 @@ Context **value** referansı değiştiğinde, bu context’i tüketen bileşenle
 
 Context veri **tekilleştirme** ve **prop drilling azaltma** içindir; yüksek frekanslı güncellenecek veriyi kökten aşağı itmek performansı zorlayabilir — state parçalama (\`useState\` + props, veya küçük context’ler) düşünülür.
 
-> **Pratik not:** “context.splitting” — Kimlik / tema / locale ayrı context; tek dev context yerine.
+> **İpucu:** “context.splitting” — Kimlik / tema / locale ayrı context; tek dev context yerine.
 
-> **Pratik not:** “Consumer vs useContext?” — Sınıflarda Consumer; fonksiyonlarda useContext modern yol.
+> **İpucu:** “Consumer vs useContext?” — Sınıflarda Consumer; fonksiyonlarda useContext modern yol.
 `.trim(),
     codeExamples: [
       {
@@ -226,9 +226,9 @@ Modalda \`role="dialog"\`, odak tuzağı (\`aria-modal\`), kapatma ve Escape ile
 
 Portal hedefi genelde \`document.body\` altında \`position: fixed\` bir sarmalayıcıdır; böylece üst öğenin \`overflow: hidden\`’ından kurtulur.
 
-> **Pratik not:** “Portal neden event parent’ta yakalanır?” — Fiber ağacı hala üst bileşenin altında; DOM ebeveynliği farklı olsa da sentetik olay kabarcıklanması React ağacına göre düşünülür.
+> **İpucu:** “Portal neden event parent’ta yakalanır?” — Fiber ağacı hala üst bileşenin altında; DOM ebeveynliği farklı olsa da sentetik olay kabarcıklanması React ağacına göre düşünülür.
 
-> **Pratik not:** “SSR ve portal hedefi?” — Sunucuda \`document\` yoktur; hedef düğümü sadece istemci tarafında oluşturun / guard edin.
+> **İpucu:** “SSR ve portal hedefi?” — Sunucuda \`document\` yoktur; hedef düğümü sadece istemci tarafında oluşturun / guard edin.
 `.trim(),
     codeExamples: [
       {
@@ -335,9 +335,9 @@ Uygulamayı tek bir kök boundary ile sarmalamak “beyaz ekran”ı önler; mod
 
 Kullanıcıya “bir şey kırıldı, yenile veya geri dön” mesajı; prod’da hata raporlama servisine \`componentDidCatch\` içinde log isteği.
 
-> **Pratik not:** “Neden hook handler hataları boundary’e düşmez?” — Boundary yakalama modeli render/lifecycle hatalarına odaklanır; handler için try/catch kullanılır.
+> **İpucu:** “Neden hook handler hataları boundary’e düşmez?” — Boundary yakalama modeli render/lifecycle hatalarına odaklanır; handler için try/catch kullanılır.
 
-> **Pratik not:** “getDerivedStateFromError vs didCatch?” — Biri state güncellemesi için; diğeri yan etki / log için.
+> **İpucu:** “getDerivedStateFromError vs didCatch?” — Biri state güncellemesi için; diğeri yan etki / log için.
 `.trim(),
     codeExamples: [
       {
@@ -542,7 +542,7 @@ Kullanıcı her şeyi aynı anda indirmek zorunda kalmamalıdır. Büyük grafik
 2. Gerçek cihaz / Lighthouse / Profiler ile darboğazı bulun.  
 3. Gerekirse lazy bölün veya gereksiz re-render kesin — erken mikro-opt’tan kaçının.
 
-> **Pratik not:** Bu repoda \`npm run build\` çıktısında uyarı çıkması normal; paketi bölmek performans iyileştirmesinin bir parçasıdır.
+> **İpucu:** Bu repoda \`npm run build\` çıktısında uyarı çıkması normal; paketi bölmek performans iyileştirmesinin bir parçasıdır.
 `.trim(),
     codeExamples: [
       {
@@ -790,7 +790,7 @@ Tebrikler: konu tekrarından sonra büyük ve birleştirici bir **örnek görev*
 
 > Bu alan bilinç olarak “devasa challenge” için genişletilmiştir. **Kodu sıfırla** düğmesiyle başlangıç şablonuna dönebilirsin.
 
-> **Pratik not:** Hata durumunda console’u ve canlı önizlemeyi kontrol et; \`key\` ve kontrollü input’ları gözden kaçırma.
+> **İpucu:** Hata durumunda console’u ve canlı önizlemeyi kontrol et; \`key\` ve kontrollü input’ları gözden kaçırma.
 `.trim(),
     codeExamples: [
       {

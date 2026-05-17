@@ -3,10 +3,15 @@ import ReactMarkdown from 'react-markdown'
 import CodePlayground from './CodePlayground'
 import LessonStudyAux from './LessonStudyAux'
 import LessonCard from './LessonCard'
-import { createMarkdownComponents, markdownRemarkPlugins } from './MarkdownCodeBlocks'
+import {
+  createMarkdownComponents,
+  markdownRemarkPlugins,
+} from './MarkdownCodeBlocks'
+import LessonReadingGuide from './LessonReadingGuide'
 import type { Lesson } from '../types'
 import { buildPlaygroundInitialCode } from '../utils/buildPlaygroundInitialCode'
 import { lessonAllQuickChecksResolvable } from '../utils/lessonQuizHelpers'
+import { precomputeLessonH2Anchors } from '../utils/lessonReadingMeta'
 
 export interface LessonWorkspaceProps {
   lesson: Lesson
@@ -30,7 +35,15 @@ export default function LessonWorkspace({
 }: LessonWorkspaceProps) {
   const isLaboratory = lesson.lessonLayout === 'laboratory'
   const lessonQuizResolvable = lessonAllQuickChecksResolvable(lesson)
-  const markdownComponents = useMemo(() => createMarkdownComponents(), [])
+  const labH2Plan = useMemo(
+    () => precomputeLessonH2Anchors(lesson.content),
+    [lesson.content],
+  )
+
+  const markdownComponents = useMemo(
+    () => createMarkdownComponents({ h2AnchorPlan: labH2Plan }),
+    [labH2Plan],
+  )
 
   const [isQuizPassed, setIsQuizPassed] = useState(false)
   const [interactiveGatesOk, setInteractiveGatesOk] = useState(
@@ -78,17 +91,18 @@ export default function LessonWorkspace({
     <>
       <LessonStudyAux lessonId={lesson.id} />
       {isLaboratory ? (
-        <article className="flex-1 border-b border-neutral-200 bg-gradient-to-b from-violet-950/5 to-white dark:border-[#3c3c3c] dark:from-violet-950/20 dark:to-[#1e1e1e]">
+        <article className="flex-1 border-b border-neutral-200 bg-gradient-to-b from-neutral-50 to-white dark:border-[#3c3c3c] dark:from-zinc-900/30 dark:to-[#1e1e1e]">
           <div className="mx-auto max-w-4xl px-5 py-10 lg:px-8 lg:py-12">
             <header className="mb-8">
-              <span className="mb-3 inline-block rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium uppercase tracking-wide text-violet-800 dark:border-violet-500/40 dark:bg-violet-950/50 dark:text-violet-200">
+              <span className="mb-3 inline-block rounded-md border border-neutral-300 bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-700 dark:border-neutral-600 dark:bg-zinc-800 dark:text-neutral-200">
                 Laboratuvar görevi
               </span>
               <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-[#f3f3f3] sm:text-3xl">
                 {lesson.title}
               </h1>
+              <LessonReadingGuide lesson={lesson} />
             </header>
-            <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-20 max-w-none dark:prose-blockquote:bg-violet-950/35 prose-a:text-green-700 prose-blockquote:border-l-violet-600 prose-blockquote:bg-violet-50/50 hover:prose-a:underline dark:prose-a:text-green-400 dark:prose-blockquote:border-violet-500">
+            <div className="lesson-md prose prose-slate dark:prose-invert prose-headings:scroll-mt-20 max-w-none prose-a:text-emerald-800 prose-blockquote:border-l-stone-400 prose-blockquote:bg-stone-50/90 hover:prose-a:underline dark:prose-a:text-emerald-400/95 dark:prose-blockquote:border-stone-600 dark:prose-blockquote:bg-stone-900/35">
               <ReactMarkdown
                 remarkPlugins={markdownRemarkPlugins}
                 components={markdownComponents}
@@ -228,7 +242,7 @@ export default function LessonWorkspace({
               type="button"
               onClick={handleFinishClick}
               disabled={!canFinishLesson}
-              className="inline-flex w-full items-center justify-center rounded-2xl border-b-[5px] border-[#449b04] bg-[#58cc02] px-8 py-5 text-xl font-extrabold tracking-tight text-white shadow-lg transition enabled:hover:translate-y-0.5 enabled:hover:border-b-[4px] enabled:hover:brightness-105 enabled:active:translate-y-1 enabled:active:border-b-0 disabled:cursor-not-allowed disabled:border-b-0 disabled:bg-neutral-300 disabled:text-neutral-500 dark:disabled:bg-[#474747] dark:disabled:text-[#858585] sm:w-auto sm:min-w-[280px]"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-neutral-900 bg-neutral-900 px-8 py-3.5 text-base font-semibold text-white shadow-sm transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:border-neutral-300 disabled:bg-neutral-200 disabled:text-neutral-500 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white dark:disabled:border-neutral-600 dark:disabled:bg-neutral-700 dark:disabled:text-neutral-400 sm:w-auto sm:min-w-[220px]"
             >
               {isLessonAlreadyCompleted
                 ? isLaboratory
@@ -241,10 +255,10 @@ export default function LessonWorkspace({
 
             {sessionCelebration && isLessonAlreadyCompleted ? (
               <div
-                className="rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-green-950 shadow-sm dark:border-green-900/60 dark:bg-green-950/40 dark:text-green-50"
+                className="rounded-lg border border-teal-200 bg-teal-50/95 px-5 py-4 text-teal-950 shadow-sm dark:border-teal-800 dark:bg-teal-950/35 dark:text-teal-50"
                 role="status"
               >
-                <p className="text-base font-semibold leading-relaxed text-green-900 dark:text-green-100">
+                <p className="text-base font-semibold leading-relaxed text-teal-900 dark:text-teal-50">
                   {isLaboratory
                     ? 'Laboratuvar görevin kaydedildi — eline sağlık.'
                     : 'Bu dersi başarıyla tamamladın.'}
@@ -253,13 +267,13 @@ export default function LessonWorkspace({
                   <button
                     type="button"
                     onClick={onGoToNextLesson}
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border-b-4 border-[#1d4ed8] bg-[#2563eb] px-6 py-3 text-base font-bold text-white shadow-md transition hover:translate-y-0.5 hover:border-b-[3px] hover:brightness-105 active:translate-y-1 active:border-b-0 sm:w-auto"
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-6 py-3 text-base font-semibold text-neutral-900 shadow-sm transition hover:bg-neutral-50 dark:border-neutral-600 dark:bg-zinc-800 dark:text-neutral-100 dark:hover:bg-zinc-700 sm:w-auto"
                   >
                     Sıradaki Derse Geç
                     <span aria-hidden>→</span>
                   </button>
                 ) : (
-                  <p className="mt-4 text-lg font-bold tracking-tight text-green-800 dark:text-[#89d185]">
+                  <p className="mt-4 text-lg font-semibold tracking-tight text-teal-800 dark:text-teal-200">
                     Tebrikler, Eğitimi Tamamladın!
                   </p>
                 )}

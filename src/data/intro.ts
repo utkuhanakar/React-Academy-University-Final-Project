@@ -8,25 +8,45 @@ export const introLessons: Lesson[] = [
     title: 'React ES6 (Destructuring, Arrow Functions, Spread Operator)',
     difficulty: 'başlangıç',
     content: `
-## Neden ES6?
+## Neden önce ES6?
 
-React kod tabanında üçlünün hedefi daha kısa satırdan önce **okunabilirlik ve güvenilir \`this\`/state kalıplarıdır**. Çizgisel sıralı dış materyallerden biri olarak [W3Schools JavaScript kursu](https://www.w3schools.com/js/default.asp), arrow ve diziler için pratik bloklar sunar (kodu kopyalamak yerine aynı fikrin kendi kısa denemenizi yazın). Birinci paragraf: klasik blok; ikinci paragraf: destructuring; üçüncü küçük spread ile yeni yüzeysel nesne üretin — çıktıları yan yana kıyaslayın.
+React bileşeni yazdığınızda üç kalıpla sürekli karşılaşırsınız: nesneden alan seçme, kısa ve okunabilir fonksiyonlar yazmak, state veya birleştirilmiş veriyi bozmadan güncelleme. Bunlar ayrı ayrı “söz dizimi dersi” gibi görünür; pratikte aynı hedefe işler — **hatayı azaltan, daha kısa ve sürdürülebilir** kod yazmak.
 
-## Arrow functions
+Dış başvuru için [W3Schools’un JavaScript bölümü](https://www.w3schools.com/js/default.asp) üzerinden ilerlemek gayet doğaldır. Ancak kodu kopyalayı yapıştırmadan, aynı fikrin **kendi küçük denemenizi** yazmak çok daha faydalıdır: parametre sırasında neyin değiştiğini siz seçersiniz.
 
-Kısa sözdizimi dışında önemli fark: ok fonksiyonları \`this\`i **lexically** bağlar — sınıf bileşenlerinden hook tabanlı bileşenlere geçince bile, *callback* içinde \`this\` avcılığı yapmadan düşünebilirsiniz çünkü çoğu React kodu işlev bileşenidir ve \`this\` zaten yoktur.
+## Arrow functions (ok fonksiyonları)
 
-## Destructuring
+**\`=>\`** yazımının amacı hem tekrarı azaltmak hem de “bu fonksiyon kısa, net ve çoğu yerde sıradan bağlam gerektiren bir iş yapıyor” sinyali vermektir.
 
-\`const { ad, soyad } = kisi\` ile nesneden alan çekmek; \`const [a, b] = dizi\` ile dizi parçalamak, props ve hook dönüşlerinde tekrarı azaltır.
+Sınıflı bileşenlerden gelen arkadaşlar için önemli fark şudur: **klasik** \`function\` ile bildirilmiş bir metot bazen \`this\`’in beklenenden farklı olmasına yol açarken ok fonksiyonu bağlamını **yeniden oluşturmaz**; gerekiyorsa kapanış (closure) veya parametre olarak veri kullanırsınız. İşlev bileşeni dünyasında \`this\` zaten sık kullanılmadığı için beyninizi yormayı burada düşük tutmak mümkündür — yine de olay işleyicide “ben bu değişkene hep erişeceğim” varsayımında oklar okumayı rahatlatır.
 
-## Spread
+## Destructuring (yıkımlama)
 
-\`{ ...onceki, yeniAlan: 1 }\` immutable güncelleme kalıbının kalbidir — React, referans değişimini kıyaslayarak yeniden render kararı verir.
+\`const { ad, soyad = 'Misafir' } = kisi;\` yapısı, props nesnesinden alan seçerken gereksiz noktalı erişimi azaltır.
 
-> **Pratik not:** “Spread ile yüzeysel kopya alırım; iç içe nesnede tüm ağacı güncellemem gerekir mi?” veya “Arrow function ile geleneksel function arasında **event handler** bağlamı nasıl fark eder?” gibi üçlü konular sık birlikte sorulur ve ele alınır.
+\`const [ilk, ikinci] = liste;\`, hook’ların sıra tabanlı dönüşlerini okumanın da anahtarıdır. Burada sık tuzak şudur: **iç içe** bir yerde olduğunuzu unutursanız yüzeysel keşif yaparsınız — her seviyede gereken alanın bilinçle çekildiğinden emin olun.
 
-> **Pratik not:** “Aşağıdaki kod çıktısı nedir?” tipinde \`[...dizi, x]\` veya \`{...obj, a:1}\` birleştirme sorularına hazır olun.
+## Spread (yayımlama — yüzeysel birleştirme)
+
+\`const yeni = { ...onceki, puan: 10 };\` kalıbı, yüzeysel bir kopyanın üzerine alan yazmak için kullanılır. Referansların değişmemesi gerektiği senaryoda (özellikle React state’inde) bu çok sık günlük rutindir.
+
+Unutmayın: spread tek başına derin yapıların **otomatik klonu** olmaz; iç içe bir düğüm değişecekse seçtiğiniz seviye için yeniden nesne oluşturmanız gerekir — aksi hâlde aynı iç referansa iki yerden yanlışlıkla yazarsınız.
+
+## Rest parametreleri ile toplama
+
+\`function topla(ilki, ...digerleri) {}\` yazımında \`...\` parametre olarak “kalan argümanları dizi olarak topla” anlamına gelir; yayılma işleciyle sık sık yan yana konur ama **bağlamına göre** anlamı değişir.
+
+## Küçük alıştırma planı (10–15 dk)
+
+1. Küçük bir objeyi \`...\` ile kopyalayın; iç içe alanı değiştirmeden konsolda adresler karşılaştırın.
+
+2. Aynı kodu klasik fonksiyon ve ok ile yazmayı iki satır için deneyin; okuması hangisinde daha hızlı elinize oturuyor?
+
+> **İpucu:** Sınavlarda sık gelen tuzak bileşeni: yüzeysel kopyanın yetmediği yer ile “ok fonksiyonu doğal olarak daha güvenli” yanlış genellemesini karıştırmak. İkisinin sınırını not defterinizde yan yana tutun.
+
+> **İpucu:** \`[...,dizi]\` ile \`{ ...dizi }\` hayal etmeyin — biri dizinin elemanlarına yayılır, diğeri genellikle sözdizimi hatası ya da doğru olmadığınız bir kalıbdır.
+
+> **Sıkça sorulan:** \`structuredClone\` ne zaman? Derin yapı gerekiyorsa veya tarayıcı yeterliyse sık gerekebilir; React state’inde her seferinde gerekmeyeceği gibi, maliyet ve serileştirme sınırlarını da düşünün.
 `.trim(),
     codeExamples: [
       {
@@ -56,6 +76,42 @@ const ciftler = sayilar.filter((n) => n % 2 === 0).map((n) => n * 10)
         code: `const [ilk, ikinci, ...geriKalan] = [10, 20, 30, 40]
 // geriKalan: [30, 40]`,
       },
+      {
+        title: 'Ok fonksiyonla event handler içinde bağlam özeti',
+        code: `type Log = { (msg: string): void }
+
+function Form({ log }: { log: Log }) {
+  const degerRef = { mevcut: '' }
+
+  return (
+    <input
+      onChange={(e) => {
+        degerRef.mevcut = e.target.value
+        log(degerRef.mevcut)
+      }}
+    />
+  )
+}`,
+      },
+      {
+        title: 'İç içe nesnede seçili alanı yüzeysel spread ile güncelleme',
+        code: `type State = {
+  kullanici: {
+    kimlik: { id: string; rol: string }
+    tercih: { tema: 'acik' | 'koyu' }
+  }
+}
+
+function temaDegistir(onceki: State): State {
+  return {
+    ...onceki,
+    kullanici: {
+      ...onceki.kullanici,
+      tercih: { tema: onceki.kullanici.tercih.tema === 'acik' ? 'koyu' : 'acik' },
+    },
+  }
+}`,
+      },
     ],
     quiz: {
       question:
@@ -68,6 +124,37 @@ const ciftler = sayilar.filter((n) => n % 2 === 0).map((n) => n * 10)
       ],
       correctAnswer: 'JSON.parse(JSON.stringify(obj)) ile derin kopya almak',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`const yeni = { ...eski }` ile kurulan yüzeysel birleştirme hakkında hangi ifade doğrudur?',
+        choices: [
+          '`yeni` içinden `yeni.profil.logoUrl = "?";` yazmak, `eski.profil` ile aynı referans satırından etkilenebilir',
+          '`yeni`, `eski` ile hiçbir alanı ortak kullanamaz; kopyanın tamamı sıfır bellekte oluşmuştur',
+          'Spread, iç içe tüm dalları garanti olarak klonladığı için `immer` gereksiz kalır',
+          'React state’inde spread kullanımı `key` gereksinimini otomatik çözer',
+        ],
+        correctAnswer:
+          '`yeni` içinden `yeni.profil.logoUrl = "?";` yazmak, `eski.profil` ile aynı referans satırından etkilenebilir',
+      },
+      {
+        question: '`const [a,, b] = [1, 2, 3]` işleminden sonra `b` hangi sayıdır?',
+        choices: ['1', '2', '`undefined` çünkü sözdizimi hatası vardır', '3', '0'],
+        correctAnswer: '3',
+      },
+      {
+        question:
+          'Çoğu modern React kodunda `this` bağlamından kaçmak için sık seçilen yaklaşım hangisidir?',
+        choices: [
+          'Tamamen işlev bileşeni + props ve parametre bağlama kullanmak; gerekiyorsa kapanış',
+          '`this` bağlamını `useEffect` içinde sıfırlamak',
+          '`children` kullanmak',
+          '`createElement`’i doğrudan `document.body` ile çağırmak',
+        ],
+        correctAnswer:
+          'Tamamen işlev bileşeni + props ve parametre bağlama kullanmak; gerekiyorsa kapanış',
+      },
+    ],
     dragOrderActivity: {
       title: 'Alıştırma sırası — yüzeysel immutable güncelleme',
       description: 'Nesne state’inde tipik doğru sıra.',
@@ -115,9 +202,9 @@ DOM’da \`class\` özniteliği varken JSX’te **className** kullanırız; çü
 
 Bir bileşen fonksiyonu çoğu zaman tek bir kök öğe veya anlamlı bir parçalanmış yapı döndürür; JSX ağacı, React’in sanal DOM ile gerçek DOM’u eşleştirdiği veri yapısına karşılık gelir.
 
-> **Pratik not:** “JSX arka planda neye dönüşür?” ve “Neden \`class\` yerine \`className\`?” — kısa cevaplı sorularda en sık gelen ikilidir.
+> **İpucu:** “JSX arka planda neye dönüşür?” ve “Neden \`class\` yerine \`className\`?” — kısa cevaplı sorularda en sık gelen ikilidir.
 
-> **Pratik not:** “JSX içinde JavaScript ifadesi yazmak için hangi sözdizimi kullanılır?” — \`{ }\` ile süslü parantez sorusu neredeyse klasiktir.
+> **İpucu:** “JSX içinde JavaScript ifadesi yazmak için hangi sözdizimi kullanılır?” — \`{ }\` ile süslü parantez sorusu neredeyse klasiktir.
 `.trim(),
     codeExamples: [
       {
@@ -197,9 +284,9 @@ Boolean özniteliklerinde \`disabled={true}\` veya sadece \`disabled\` (JSX kıs
 
 İçerik, çocuk düğümler olarak iletilir; metin ve eleman karışımları yaygındır.
 
-> **Pratik not:** \`style\` özniteliğinde çift süslü parantez kullanımı: dıştaki JSX ifadesi, içteki ise stil nesnesidir.
+> **İpucu:** \`style\` özniteliğinde çift süslü parantez kullanımı: dıştaki JSX ifadesi, içteki ise stil nesnesidir.
 
-> **Pratik not:** \`&&\` ile ternary arasındaki fark; \`0 && …\` tuzak sorusuna hazırlıklı olun.
+> **İpucu:** \`&&\` ile ternary arasındaki fark; \`0 && …\` tuzak sorusuna hazırlıklı olun.
 `.trim(),
     codeExamples: [
       {
@@ -292,9 +379,9 @@ export function Selamlama() {
 
 Bileşen gövdesinde \`if (!veri) return <Uyari />\` kalıbı okunabilirliği artırır.
 
-> **Pratik not:** “Koşullu render” ile “kontrollü bileşen (form)” — kavramları birbirine karıştırmayın; benzer görünen soru kökleri çoğu zaman özellikleri birbirinden ayırmanızı bekler.
+> **İpucu:** “Koşullu render” ile “kontrollü bileşen (form)” — kavramları birbirine karıştırmayın; benzer görünen soru kökleri çoğu zaman özellikleri birbirinden ayırmanızı bekler.
 
-> **Pratik not:** Kısa kod: \`a || b\` ile \`a ?? b\` farkı (nullish birleştirici) props varsayılanlarında çıkabilir.
+> **İpucu:** Kısa kod: \`a || b\` ile \`a ?? b\` farkı (nullish birleştirici) props varsayılanlarında çıkabilir.
 `.trim(),
     codeExamples: [
       {
