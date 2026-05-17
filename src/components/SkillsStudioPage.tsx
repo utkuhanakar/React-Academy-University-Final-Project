@@ -36,6 +36,7 @@ export default function SkillsStudioPage({
 }: SkillsStudioPageProps) {
   const tab: SkillsStudioTabId = extended.skillsLastTab ?? 'drills'
   const [drillIx, setDrillIx] = useState(0)
+  const [drillShuffleEpoch, setDrillShuffleEpoch] = useState(0)
   const [pathQuizEpoch, setPathQuizEpoch] = useState(0)
   const md = useMemo(() => createMarkdownComponents(), [])
 
@@ -122,11 +123,11 @@ export default function SkillsStudioPage({
   const drillQuizView = useMemo(() => {
     if (!activeDrill) return null
     return getShuffledQuizView(
-      `${activeDrill.id}:studio-drill:v1`,
+      `${activeDrill.id}:studio-drill:v1:${drillShuffleEpoch}`,
       activeDrill.quiz.choices,
       activeDrill.quiz.correctAnswer,
     )
-  }, [activeDrill])
+  }, [activeDrill, drillShuffleEpoch])
 
   const pathQuizView = useMemo(() => {
     if (!step) return null
@@ -316,7 +317,10 @@ Oturum açtıysanız bazı sayaçlar isteğe bağlı olarak bulutta da tutulabil
                       ? 'border-green-600 bg-green-100 text-green-900 dark:border-[#89d185] dark:bg-[#253329]'
                       : 'border-neutral-200 bg-white text-neutral-600 dark:border-[#474747] dark:bg-[#2d2d2d] dark:text-[#bdbdbd]'
                   }`}
-                  onClick={() => setDrillIx(i)}
+                  onClick={() => {
+                    setDrillIx(i)
+                    setDrillShuffleEpoch(0)
+                  }}
                 >
                   {i + 1}. {d.title}
                 </button>
@@ -331,10 +335,11 @@ Oturum açtıysanız bazı sayaçlar isteğe bağlı olarak bulutta da tutulabil
               </p>
               {activeDrill && drillQuizView && drillQuizOk ? (
                 <Quiz
-                  key={`${activeDrill.id}-${drillIx}`}
+                  key={`${activeDrill.id}-${drillIx}-${drillShuffleEpoch}`}
                   question={activeDrill.quiz.question}
                   options={drillQuizView.displayChoices}
                   correctAnswerIndex={drillQuizView.displayCorrectIndex}
+                  onQuizRetryShuffle={() => setDrillShuffleEpoch((n) => n + 1)}
                 />
               ) : (
                 <p className="text-sm text-red-600 dark:text-red-300">

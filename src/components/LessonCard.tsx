@@ -68,15 +68,6 @@ export default function LessonCard({
     [lesson.title, quickChecks],
   )
 
-  /** Doğru cevap daima ilk veri sırasından metin ile eşleşir; ekranda şıklar ise ders+slot’a göre karışır. */
-  const shuffledQuizViews = useMemo(
-    () =>
-      quickChecks.map((q, i) =>
-        getShuffledQuizView(`${lesson.id}:check:${i}`, q.choices, q.correctAnswer),
-      ),
-    [lesson.id, quickChecks],
-  )
-
   const allChecksValid = checkIndices.every((ix) => ix >= 0)
 
   const [checksPassed, setChecksPassed] = useState<boolean[]>(() =>
@@ -86,6 +77,21 @@ export default function LessonCard({
   const [dragOrderOk, setDragOrderOk] = useState(() => !lesson.dragOrderActivity)
   const [dragCodeOk, setDragCodeOk] = useState(() => !lesson.dragCodeActivity)
   const [clozeOk, setClozeOk] = useState(() => !lesson.clozeActivity)
+
+  const [quizShuffleRetries, setQuizShuffleRetries] = useState<number[]>([])
+
+  /** Doğru cevap veri tarafında sabit; görünen sıra ders+slot+tekrar sayacına bağlı karışır. */
+  const shuffledQuizViews = useMemo(
+    () =>
+      quickChecks.map((q, i) =>
+        getShuffledQuizView(
+          `${lesson.id}:check:${i}:try${quizShuffleRetries[i] ?? 0}`,
+          q.choices,
+          q.correctAnswer,
+        ),
+      ),
+    [lesson.id, quickChecks, quizShuffleRetries],
+  )
 
   useEffect(() => {
     const okExtras =
@@ -252,10 +258,17 @@ export default function LessonCard({
                       </p>
                     ) : null}
                     <Quiz
-                      key={`${lesson.id}-check-${i}`}
+                      key={`${lesson.id}-check-${i}-t${quizShuffleRetries[i] ?? 0}`}
                       question={q.question}
                       options={opts}
                       correctAnswerIndex={showIx >= 0 ? showIx : ix}
+                      onQuizRetryShuffle={() => {
+                        setQuizShuffleRetries((prev) => {
+                          const next = [...prev]
+                          next[i] = (next[i] ?? 0) + 1
+                          return next
+                        })
+                      }}
                       onQuizPassedChange={(p) => {
                         setChecksPassed((prev) =>
                           prev.map((v, j) => (j === i ? p : v)),

@@ -114,6 +114,7 @@ export default function LessonWorkspace({
         </article>
       ) : (
         <LessonCard
+          key={lesson.id}
           lesson={lesson}
           onQuizPassedChange={handleQuizPassedChange}
           onInteractiveGatesChange={setInteractiveGatesOk}

@@ -324,7 +324,7 @@ Tarayıcıya sızmak istenen değişken **VITE_** önekli olmalıdır (aksi duru
 
 | Tür | Veri kaynağı | Görünür bileşen |
 | --- | --- | --- |
-| Çoktan seçmeli | \`lesson.quiz\`, \`extraQuizChecks\` | **Quiz** (**getShuffledQuizView** ile ekranda şık sırası deterministik olarak karıştırılır — veriyi değiştirmez). |
+| Çoktan seçmeli | \`lesson.quiz\`, \`extraQuizChecks\` | **Quiz**: \`getShuffledQuizView\` şıkları ilk gösterimde ders + soru kimliğiyle deterministik karıştırır; yanlış cevaptan sonra “Tekrar dene” seçildiğinde kapsama **bir tekrar sayacı** eklenerek sıra yenilenebilir (metin doğru şıkkı değiştirmez). |
 | Sürükleyerek kavram sırası | \`dragOrderActivity\` | **DragOrderChallenge** |
 | Kod şeridi sırası | \`dragCodeActivity\` | **DragCodeChallenge** |
 | Cloze | \`clozeActivity\` (**\`___\`** yer tutucuları) | **ClozeChallenge** |

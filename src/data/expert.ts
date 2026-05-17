@@ -71,6 +71,31 @@ function formReducer(s: Form, a: FA): Form {
       correctAnswer:
         'Reducer saf bir fonksiyon olmalı ve genellikle yeni state döndürmek için immutability ile çalışır',
     },
+    extraQuizChecks: [
+      {
+        question: '`dispatch` ile gönderilen aksiyonlar reducer’da nasıl ele alınmalıdır?',
+        choices: [
+          'Reducer doğrudan `fetch` yapıp dış dünyayı bekleyebilir',
+          'Saf `reducer(state, action)` → `nextState`; immutabilite için yeni state nesnesi döndürmek yaygın desendir',
+          'Mutasyon zararsızdır; `state.count++` tercih edilir',
+          'Sadece `useEffect` aksiyon alabilir; dispatch anlamsızdır',
+        ],
+        correctAnswer:
+          'Saf `reducer(state, action)` → `nextState`; immutabilite için yeni state nesnesi döndürmek yaygın desendir',
+      },
+      {
+        question:
+          'React 18 ile aynı olay işleyicide birden fazla `dispatch` çağrısı yapıldığında batching için hangi özet doğrudur?',
+        choices: [
+          'Her dispatch anında ara DOM güncellenir; birleştirme yoktur',
+          'React olay işleyicideki çoklu state güncellemelerini gruplayıp daha az ara render ile işleyebilir',
+          '`dispatch` sadece üçüncü parti kütüphanelerde gruplanır',
+          'Batch yalnızca class bileşenlerinde mümkündür',
+        ],
+        correctAnswer:
+          'React olay işleyicideki çoklu state güncellemelerini gruplayıp daha az ara render ile işleyebilir',
+      },
+    ],
     dragOrderActivity: {
       title: 'Alıştırma sırası — reducer tasarımı',
       description:
@@ -171,6 +196,32 @@ function Sayfa() {
       correctAnswer:
         "Context’i dinleyen bileşenler değer referansı değiştiği için sık sık yeniden render olabilir",
     },
+    extraQuizChecks: [
+      {
+        question:
+          '“Context splitting” yaklaşımının ana faydası hangisidir?',
+        choices: [
+          'Tek dev context ile tüm uygulamayı sık güncellenen tek bir nesnede birleştirmek',
+          'İlgisiz güncelleme dalgalarını ayırarak sık sık gereksiz re-render azaltmak',
+          'Portal kullanımını devre dışı bırakmak',
+          'Error boundary gereksinimini kaldırmak',
+        ],
+        correctAnswer:
+          'İlgisiz güncelleme dalgalarını ayırarak sık sık gereksiz re-render azaltmak',
+      },
+      {
+        question:
+          '`createContext` ile varsayılan değer vermenin yaygın amacı hangisidir?',
+        choices: [
+          'Üretimde Provider kullanmadan “test / debug sırasında anlamlı fallback” için',
+          'Varsayılan değeri zorla null yapamazsınız',
+          '`useMemo` gereksiz hale gelir',
+          'Yalnızca server component’lerde çalışır',
+        ],
+        correctAnswer:
+          'Üretimde Provider kullanmadan “test / debug sırasında anlamlı fallback” için',
+      },
+    ],
     clozeActivity: {
       title: 'Context performans özeti',
       text: '`value` olarak her render’da yeni bir nesne vermek güncellenen tüketicilerde sık ____ yaratır; value’yu sabitlemek için projede sıkça ____ kullanılır.',
@@ -255,6 +306,32 @@ function Modal({ acik, cocuk }: { acik: boolean; cocuk: React.ReactNode }) {
       correctAnswer:
         'Aynı React ağacını koruyarak bileşeni DOM’da farklı bir düğüm altında canlandırmak',
     },
+    extraQuizChecks: [
+      {
+        question:
+          'Portal ile DOM’a taşınılan içeriğin olay kabarcıklanması için hangi öz özet daha doğrudur?',
+        choices: [
+          'Olaylar artık React ağacında hiç yakalanamaz',
+          'DOM ebeveyni farklı olsa bile olay kabarcıklanması genelde React bileşen ağacına göre düşünülür',
+          'Portal kullanıcı inputlarını iptal eder',
+          '`stopPropagation` her zaman gereksizdir',
+        ],
+        correctAnswer:
+          'DOM ebeveyni farklı olsa bile olay kabarcıklanması genelde React bileşen ağacına göre düşünülür',
+      },
+      {
+        question:
+          'Modal için portal hedefi olarak `document.body` altı sabit kapsayıcı kullanmak neden sık seçilir?',
+        choices: [
+          'SSR zorunluluğu yüzünden',
+          'Üst öğede `overflow: hidden` taşması ve z-index sıkışması gibi görünüm sorunlarını azaltmak için',
+          'React.lazy ile aynı anlama gelir',
+          '`key` gereksimini ortadan kaldırır',
+        ],
+        correctAnswer:
+          'Üst öğede `overflow: hidden` taşması ve z-index sıkışması gibi görünüm sorunlarını azaltmak için',
+      },
+    ],
     dragOrderActivity: {
       title: 'Portal kurulum sırası (özet)',
       items: [
@@ -377,6 +454,32 @@ export class HataSiniri extends Component<P, S> {
       correctAnswer:
         'Render ve yaşam döngüsü metotlarında oluşan hatalar (çocuk ağaçta); olay işleyici içindeki hatalar doğrudan kapsanmaz',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`async` bir `componentDidCatch` içinde yakalanmış hatayı doğrudan `throw new Promise.reject` etmek doğru mu?',
+        choices: [
+          'Evet; boundary Promise’leri de otomatik kurtarır',
+          'Hayır; olay zamanlamasıyla ilgili sınırlar vardır; `componentDidCatch` yan etkilere log/report için uygunken asenkron hata zincirleri için başka yaklaşım gerekir',
+          'Boundary sadece konsol uyarısı üretir; hata oluşamaz',
+          'Yalnızca SSR’da geçerlidir',
+        ],
+        correctAnswer:
+          'Hayır; olay zamanlamasıyla ilgili sınırlar vardır; `componentDidCatch` yan etkilere log/report için uygunken asenkron hata zincirleri için başka yaklaşım gerekir',
+      },
+      {
+        question:
+          'Error boundary yakalamazsa sık yaşanan kullanıcı etkisi hangisidir?',
+        choices: [
+          'Üst bileşende boş çıktı / kırılma yayılır — kök düzeyde bir boundary olmadığında görünür şekilde “beklenmedik hata” ekranı',
+          'Tarayıcı sekmesi otomatik kapanır',
+          'Development modda uyarı çıkmaz',
+          '`useMemo` sıfırlanır — state kaybolur ama kullanıcı fark etmez',
+        ],
+        correctAnswer:
+          'Üst bileşende boş çıktı / kırılma yayılır — kök düzeyde bir boundary olmadığında görünür şekilde “beklenmedik hata” ekranı',
+      },
+    ],
     dragOrderActivity: {
       title: 'Error boundary kurulum sırası',
       items: [
@@ -495,6 +598,32 @@ export default function App() {
       correctAnswer:
         '`src/data/lessons.ts`; modül dosyalarından gelen diziler tek yerde birleştirilir.',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`src/data/` altındaki `intro.ts`, `hooks.ts`, `components.ts` gibi dosyalar ne üretir?',
+        choices: [
+          'Derleyici eklentisi; `.ts` doğrudan tarayıcıda çalışır',
+          'Modül başına `Lesson[]` dizileri üretme deseni — `lessons.ts` bunları birleştirerek uygulama sırasını tanımlar',
+          '`package.json` replikası',
+          '`vite.config` alternatifi',
+        ],
+        correctAnswer:
+          'Modül başına `Lesson[]` dizileri üretme deseni — `lessons.ts` bunları birleştirerek uygulama sırasını tanımlar',
+      },
+      {
+        question:
+          'Yeni bir ders eklemek için en kritik gereksinim hangisidir?',
+        choices: [
+          '`index.html` içine script etiketi eklemek',
+          'Uygun veri dosyasında `Lesson` oluşturmak ve `lessons.ts` sırasına benzersiz `id` ile dahil etmek',
+          '`node_modules` silmek',
+          'Her ders için ayrı Vite yapılandırması',
+        ],
+        correctAnswer:
+          'Uygun veri dosyasında `Lesson` oluşturmak ve `lessons.ts` sırasına benzersiz `id` ile dahil etmek',
+      },
+    ],
     clozeActivity: {
       title: 'Bu repo’nun yapısı',
       text: 'Ders sırasının birleştirildiği birincil dosya ____ iken tema ve bileşen yerleşimi için ____ altı kullanılır.',
@@ -580,6 +709,32 @@ function Kok() {
       correctAnswer:
         'Varsayılan export edilen bileşen, kod ihtiyaç doğunca yüklenen parçadan gelir.',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`memo` bileşeni sarmalıyız ama içeriye her render’da yeni nesne/fonksiyon prop olarak verilirse ne olur?',
+        choices: [
+          '`memo` her zaman ilk render sonra hiçbir zaman güncellenmez',
+          'Prop referansları değiştiyse `memo` kısmi korumayı sağlar ama yine yeniden render olabilir; prop stabilizasyonu (`useMemo`/`useCallback`) bağlama bağlıdır',
+          'React uyarıyla derlemeyi durdurur',
+          'Suspense gereksiz hale gelir',
+        ],
+        correctAnswer:
+          'Prop referansları değiştiyse `memo` kısmi korumayı sağlar ama yine yeniden render olabilir; prop stabilizasyonu (`useMemo`/`useCallback`) bağlama bağlıdır',
+      },
+      {
+        question:
+          'İlk yükleme “çok büyükse” sık seçilen strateji hangisidir?',
+        choices: [
+          'İlk yüklemede kullanıcı arayüzünü bloklamak',
+          '`React.lazy` + dinamik `import()` ile parçayı ertelemek ve `Suspense` ile yükleme arayüzü sunmak',
+          'Üretimi `console.log` ile ölçmek',
+          'Tüm node_modules içeriği tek pakette kalmalıdır',
+        ],
+        correctAnswer:
+          '`React.lazy` + dinamik `import()` ile parçayı ertelemek ve `Suspense` ile yükleme arayüzü sunmak',
+      },
+    ],
     dragOrderActivity: {
       title: 'Alıştırma sırası — yükleme bütçesi',
       description: 'Önce doğru sonra hızlı: tipik sıra.',
@@ -674,6 +829,32 @@ test('kaydet görünür', () => {
       correctAnswer:
         'Kullanıcı gibi görünür metin / rol ile sorgula; gerektiğinde test id',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`getByRole` ile seçim yapmak neden sıkça tercih edilir?',
+        choices: [
+          'Sadece hız için; erişilebilirlik ile ilgisizdir',
+          'Ekran okuyucu ile uyum için rol ve görünür metin gibi semantik hedefler seçmeye yönlendirdiği için',
+          '`data-testid` zorunluluğu oluşturur',
+          '`innerHTML` snapshot’ına alternatif değildir',
+        ],
+        correctAnswer:
+          'Ekran okuyucu ile uyum için rol ve görünür metin gibi semantik hedefler seçmeye yönlendirdiği için',
+      },
+      {
+        question:
+          'RTL’de “implementasyon detayına” çok yakın sıklıkla ne sayılır (anti-pattern)?',
+        choices: [
+          '`screen.getByText` gerektiğinde',
+          'Çok sık doğrudan sınıf adı/CSS seçici veya dahili bileşen yapısına sıkışmak',
+          'Rol seçimleri kullanmak',
+          'Temel render yardımcıları kullanmak',
+        ],
+        correctAnswer:
+          'Çok sık doğrudan sınıf adı/CSS seçici veya dahili bileşen yapısına sıkışmak',
+      },
+    ],
     clozeActivity: {
       title: 'RTL seçimleri',
       text:
@@ -740,6 +921,26 @@ console.log(u)`,
       correctAnswer:
         'Geliştiricide `.env.local` kullanıp sırrı `.gitignore` ile dışarıda tutmak ve dağıtımda host secret kullanmak',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`VITE_` önekli ortam anahtarları için hangi uyarı doğrudur?',
+        choices: [
+          'Create React App ile aynıdır; `REACT_APP_` zorunludur.',
+          '`NEXT_PUBLIC_` olmadan Vite ortam okuması yapılmaz.',
+          '`VITE_` ile seçilen anahtarlar üretim paketine gömülür; gizli sırları bu önek altında kodlamayıp hosting secret kullanın.',
+          '`SECRET_` öneği tarayıcıda görünmez; Vite için özeldir.',
+        ],
+        correctAnswer:
+          '`VITE_` ile seçilen anahtarlar üretim paketine gömülür; gizli sırları bu önek altında kodlamayıp hosting secret kullanın.',
+      },
+      {
+        question:
+          'Statik çıktının tipik çıktı klasörü nedir?',
+        choices: ['`node_modules/vendor`', '`dist/`', '`src/tmp`', '`coverage/`'],
+        correctAnswer: '`dist/`',
+      },
+    ],
     dragOrderActivity: {
       title: 'Güvenli yayın sırası',
       items: [
@@ -813,6 +1014,32 @@ export default function App() {
       correctAnswer:
         'Liste ve formları React state ile kontrollü/kurallı şekilde yönetmek',
     },
+    extraQuizChecks: [
+      {
+        question:
+          'Todo listesi öğesi için güvenilir `key` seçimi nedir?',
+        choices: [
+          'Her zaman sıra indeksi — en basiti',
+          'Mümkünse sabit ve benzersiz id (liste sırası çok değişiyorsa indeks sık sık tuzak çıkarır)',
+          '`Math.random()` her render için',
+          'Metin içeriği aynıysa key gerekmez',
+        ],
+        correctAnswer:
+          'Mümkünse sabit ve benzersiz id (liste sırası çok değişiyorsa indeks sık sık tuzak çıkarır)',
+      },
+      {
+        question:
+          'Silme işlemini state’den “immutasyon” ile yapmak hangi yaklaşımı doğru özetler?',
+        choices: [
+          'Doğrudan `liste.pop()` sonra `setListe(liste)`',
+          '`setListe(prev => prev.filter(...))` gibi yeni dizi oluşturmak — React geçişlerini daha öngörülebilir kılar',
+          'DOM’dan elle node silmek yeterli',
+          '`document.write` kullanmak',
+        ],
+        correctAnswer:
+          '`setListe(prev => prev.filter(...))` gibi yeni dizi oluşturmak — React geçişlerini daha öngörülebilir kılar',
+      },
+    ],
     dragOrderActivity: {
       title: 'Todo laboratuvarı — önerilen adımlar',
       description: 'Kapsamlı bir projede sıra genelde böyle işler.',

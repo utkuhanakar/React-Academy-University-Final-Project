@@ -57,6 +57,31 @@ Bileşen gövdesinde \`if (!veri) return <Yukleniyor />\` deseni, iç içe terna
       correctAnswer:
         'Metin veya sayı olarak "0" görünebilir — `&&` sol tarafı 0 iken sol değer render edilir',
     },
+    extraQuizChecks: [
+      {
+        question:
+          '`false && <B />` ile `undefined && <B />` için genel kural ne olmalı?',
+        choices: [
+          'Her ikisinde de B render edilir',
+          '`&&` soldaki ifade doğrudan JSX’te kullanılıyorsa, `false` ve `undefined` genelde görünmez; `0` ise ekranda “0” basabilir',
+          '`undefined` bileşeni zorlar; mutlaka uyarı çıkarır',
+          'Yalnızca falsy ise React hata verir',
+        ],
+        correctAnswer:
+          '`&&` soldaki ifade doğrudan JSX’te kullanılıyorsa, `false` ve `undefined` genelde görünmez; `0` ise ekranda “0” basabilir',
+      },
+      {
+        question:
+          'Uzun dallanmalı JSX’i azaltmak için bileşen gövdesinde sık kullanılan desen hangisidir?',
+        choices: [
+          'Birden fazla `return window` kullanmak',
+          'Çok dallı `switch` kullanmak (JSX doğrudan değil, yardımcı fonksiyon veya bileşende)',
+          '`if (!kosul) return <Y />` ile erken dönüş; ardından normal render',
+          'Tüm koşulları tek satır inline `eval` ile birleştirmek',
+        ],
+        correctAnswer: '`if (!kosul) return <Y />` ile erken dönüş; ardından normal render',
+      },
+    ],
     clozeActivity: {
       title: 'Alıştırma — && ile ternary',
       text: 'Tek koşulla isteğe bağlı küçük parça göstermek için sıkça ___ kullanılır; iki dengeli seçenek için ise ___ daha uygundur.',
@@ -146,6 +171,32 @@ function Liste({ ogeler }: { ogeler: O[] }) {
       correctAnswer:
         'Aynı ebeveyn altındaki kardeş elemanlar arasında öğeleri kararlı biçimde tanımlayıp reconciliation’ı doğru yönlendirmek',
     },
+    extraQuizChecks: [
+      {
+        question:
+          'Sırası sık değişen veya sıralanıp filtrelenebilen bir liste için `key={index}` yaklaşımı neden genelde uygun değildir?',
+        choices: [
+          'Çünkü React indeks kullanımına izin vermez',
+          'İndeks, aynı konumda farklı öğelerin durumunun veya bileşiminin karışmasına veya yanlış fiber ile eşlemesine yol açabilir',
+          'İndeks sadece class bileşenlerinde güvenilir',
+          'İndeks sadece `table` ile çalışır',
+        ],
+        correctAnswer:
+          'İndeks, aynı konumda farklı öğelerin durumunun veya bileşiminin karışmasına veya yanlış fiber ile eşlemesine yol açabilir',
+      },
+      {
+        question:
+          '` liste.map(...) ` içinde `key` doğrudan hangi JSX öğesi üzerinde verilmelidir (kardeş listesi düşünün)?',
+        choices: [
+          'Yalnızca kapsayıcı `<div>`’in en dışına; çocuklara yazılmaz',
+          '`map`’in döndürdüğü her bir kardeş kök düğüm (ör. `<li>`, `<tr>`, tek fragment ise fragment’ın key’li olması gerekebilir)',
+          '`key` doğrudan `map` fonksiyonunun adına yazılır',
+          '`style` nesnesinin içinde',
+        ],
+        correctAnswer:
+          '`map`’in döndürdüğü her bir kardeş kök düğüm (ör. `<li>`, `<tr>`, tek fragment ise fragment’ın key’li olması gerekebilir)',
+      },
+    ],
     dragCodeActivity: {
       title: 'Alıştırma — map + key şeridi',
       description: 'Liste satırının tipik sırası.',
@@ -262,6 +313,32 @@ export default function Form() {
       ],
       correctAnswer: '`value` React state’inden gelir ve `onChange` ile state güncellenir',
     },
+    extraQuizChecks: [
+      {
+        question:
+          'Kontrollü bileşen yerine ilk değeri DOM’a bırakıp gerektiğinde `ref` ile okumayı tercih eden yaklaşım nasıl adlandırılır?',
+        choices: [
+          'Kontrollü bileşen (controlled)',
+          'Kontrolsüz (uncontrolled) bileşen; başlangıç için genelde `defaultValue` kullanılır',
+          'Saf fonksiyon bileşeni',
+          'Kalıcı depolama (localStorage)',
+        ],
+        correctAnswer:
+          'Kontrolsüz (uncontrolled) bileşen; başlangıç için genelde `defaultValue` kullanılır',
+      },
+      {
+        question:
+          'Çoklu alanları tek nesnede birleştirmek için sık kullanılan desen hangisidir?',
+        choices: [
+          '`useState` ile `setState((onceki) => ({ ...onceki, alan: yeni }))` şeklinde nesneyi yayılımla birleştirmek',
+          'Her input için mutlaka ayrı `document.getElementById`',
+          '`value={undefined}` bırakıp sessiz uyarı beklemek',
+          'Reducer zorunludur; `useState` birden fazla inputta yasaktır',
+        ],
+        correctAnswer:
+          '`useState` ile `setState((onceki) => ({ ...onceki, alan: yeni }))` şeklinde nesneyi yayılımla birleştirmek',
+      },
+    ],
     dragOrderActivity: {
       title: 'Alıştırma sırası — kontrollü alan düşün',
       description: 'Başarılı kontrollü tek satır yapısı.',
@@ -317,7 +394,7 @@ Tarayıcı, form gönderiminde sayfayı **yeniden yükleme** (tam sayfa navigati
 
 ## Tip güvenliği
 
-TypeScript’te \`React.FormEvent\` veya \`FormEvent<HTMLFormElement>\` kullanılabilir; projede \`e: FormEvent\` → build util \`React.FormEvent\` ile düzeltilir.
+TypeScript’te olay imzası olarak \`React.FormEvent<HTMLFormElement>\` (veya eşleniği \`FormEvent<HTMLFormElement>\`) yaygındır; JSX’te \`React\` kullanılıyorsa önekli sürüm net okunur.
 
 > **İpucu:** “\`onSubmit\` ile düğme \`onClick\` farkı?” — Enter ve form semantiği; birden çok gönderim yolu.
 
@@ -357,6 +434,26 @@ export default function KayitFormu() {
       correctAnswer:
         'Tarayıcının tam sayfa yenilemesi / varsayılan POST navigasyonunu engellemek',
     },
+    extraQuizChecks: [
+      {
+        question:
+          'Form içinde varsayılan `type="submit"` olan düğmenin aksine, gönderimi tetiklememek için sık kullanılan `type` değeri nedir?',
+        choices: ['`submit`', '`button`', '`reset` (her zaman tehlikesizdir)', '`hidden`'],
+        correctAnswer: '`button`',
+      },
+      {
+        question:
+          '`preventDefault()` çağırmayı unuttuğunuzda SPA’da en yaygın gözlem hangisidir?',
+        choices: [
+          'Tarayıcı sayfayı tam yeniden yükler veya klasik POST akışına gider — React state sıfırlanır',
+          'Yalnızca konsolda uyarı çıkar',
+          '`useReducer` iptal olur',
+          'Yalnızca dark mode sıfırlanır',
+        ],
+        correctAnswer:
+          'Tarayıcı sayfayı tam yeniden yükler veya klasik POST akışına gider — React state sıfırlanır',
+      },
+    ],
     dragOrderActivity: {
       title: 'Alıştırma sırası — SPA form gönderimi',
       description: '`onSubmit` ile çalışan tipik sıra.',

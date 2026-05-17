@@ -11,6 +11,11 @@ export interface QuizProps {
    */
   onQuizPassedChange?: (passed: boolean) => void
   /**
+   * Ders kartı / stüdyo: “Tekrar dene” sırasında üst bileşene bildirir ki şık sırasını yeniden
+   * karıştıran bir zaman damgası / sayaç artırılsın (deterministik kapsam yenilensin).
+   */
+  onQuizRetryShuffle?: () => void
+  /**
    * Alıştırma yolu: yanlış gönderimi ve doğruyu ayrı bildirir (“Tekrar dene” sıfırında tekrar etmez).
    */
   strictPracticeCallbacks?: {
@@ -28,6 +33,7 @@ export default function Quiz({
   correctAnswerIndex,
   timedSecondsBudget,
   onQuizPassedChange,
+  onQuizRetryShuffle,
   strictPracticeCallbacks,
 }: QuizProps) {
   const pathLiveRef = useRef<HTMLParagraphElement>(null)
@@ -154,6 +160,10 @@ export default function Quiz({
       strictPracticeCallbacks.onRestartPathFromBeginning()
       return
     }
+    // Peş peşe yolu dışındaki tekrarda şıklar yeniden sıralansın diye bildirim
+    if (!strictPracticeCallbacks) {
+      onQuizRetryShuffle?.()
+    }
     setIsSubmitted(false)
     setSelectedOption(null)
     onQuizPassedChange?.(false)
@@ -161,6 +171,7 @@ export default function Quiz({
     correctAnswerIndex,
     isSubmitted,
     onQuizPassedChange,
+    onQuizRetryShuffle,
     selectedOption,
     strictPracticeCallbacks,
   ])
