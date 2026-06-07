@@ -49,4 +49,5 @@ Etkileşimli React + TypeScript dersleri, bilgi sınamaları, boşluk/sürüklem
 
 **Canlı adres:** https://utkuhanakar.github.io/React-Academy-University-Final-Project/
 
+
 **Yerel:** `npm ci` → `npm run dev`.
